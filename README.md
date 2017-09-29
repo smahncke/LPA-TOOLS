@@ -1,9 +1,17 @@
-# pdp
-A plasma density profile plotter for ionization-induced trapping in laser plasma accelerator
---------------------------------------------------------------------------------------------
-NOTE: Requires a bunch of laser diagnostic files created by a 
-spectral, quasi-3D Particle-In-Cell code (f.e. FBPic, see https://github.com/fbpic/fbpic)
---------------------------------------------------------------------------------------------
+# Plasma density plotter (pdp)
+
+# DESCRIPTION:
+
+PDP is an interactive script, which plots plasma density profile for ionization-induced trapping laser plasma accelerators (see an example of a plot below).
+
+# REQUIREMENTS:
+
+- A python distribution should be installed to run the code (i.e. Anaconda, see https://docs.anaconda.com/)
+- The Particle-In-Cell code FBPIC should be installed to create the (laser) diagnostic files. For further information about the 
+  installation of FBPIC click on the following link: https://github.com/fbpic/fbpic
+- You'll also need the tool 'openPMD-viewer' for the laser amplitude analytics. For further information click on the following
+  link: https://github.com/openPMD/openPMD-viewer
+
 
 # FEATURES:
 
@@ -16,14 +24,17 @@ spectral, quasi-3D Particle-In-Cell code (f.e. FBPic, see https://github.com/fbp
 
 # HOW TO USE:
 
-1. Create a bunch of .hdf5 diagnostic files with f.e. FBPic (see the link above)
-2. Open the python file in a text editor and set the values of the parameters for the total initial gas density, the initial
-  amount of nitrogen and the pre-ionization level in a way you want them to be. 
-3. Start the script in a terminal, the 'diags/hdf5' folder created by fbpic should be in the same folder like the pdp-script
-4. That's it.
-
-NOTE: In the near future a more interactive script will be released in which some parameters can be changed directly in the 
-      terminal, so the second step above is no longer necessary. 
+1. Make sure the requirements are fulfilled.
+2. Create a bunch of .hdf5 diagnostic files by running the Particle-In-Cell code FBPIC (see above). Make sure that the 'diags' 
+   folder is in the same directory like the pdp script.
+3. The next step depends on the version of the pdp-script:
+  a)  tools/pdp_main.py: This is the original version of the plotting script, you have to set some of the global parameters (like    
+      initial amount of nitrogen gas or pre-ionization level) manually. To do so, open the python file in a text editor and set     
+      the values of these parameters in a way you want them to be. 
+  b)  pdp_GUI.py: This is the newer, more interactive version of this script. It does the same like the original one, but the 
+      paramaters can be changed directly in the terminal while the script is running. 
+4. Start the script in a terminal and follow the instructions.
+5. That's it.
       
 # TOOLS:
 
@@ -35,6 +46,14 @@ In the 'tools' directory there are some more pdp-scripts. Read the README.md-fil
   for z > 5mm
 - The conversion of the laser amplitude into a energy isn't correct, but this bug will be fixed in the near future
 
-# Example
+# EXAMPLE
 
 ![alt Example](https://github.com/smahncke/pdp/blob/master/first_draft.png?raw=true)
+
+# OLDER VERSIONS
+
+The older versions of this script will be saved in the 'source' folder. 
+
+Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
+
+
