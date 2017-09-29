@@ -34,3 +34,7 @@ In the 'tools' directory there are some more pdp-scripts. Read the README.md-fil
 - At the moment the whole plot is shifted a bit to lower values of z [mm], that's why the hydrogen curve has the short upramp
   for z > 5mm
 - The conversion of the laser amplitude into a energy isn't correct, but this bug will be fixed in the near future
+
+# Example
+
+[[https://github.com/smahncke/pdp/blob/master/first_draft.png|alt=Example for pdp]]
