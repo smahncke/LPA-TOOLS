@@ -38,15 +38,21 @@ plateau = 4000.e-6 # The length of the plateau
 #														#
 #################################################################################################################
 
-print("\n---------------- Density Profile Analytics ----------------\n \n The current parameters are: \n \n - Total gas density: "+str(n_tot)+"\n - Gas ratio: "+str(am_N2)+"% nitrogen, "+str(100.-am_N2)+"% hydrogen\n - pre-ionization-level: "+str(pre_ion_level)+"\n-----------------------------------------------------------\n")
+print("\n--------------------- Plasma Density Plotter [PDP] ---------------------")
+time.sleep(1)
+print("\nWelcome!\n")
+print("> Current version: 0.1")
+print("> visit 'https://github.com/smahncke/pdp' for further information\n------------------------------------------------------------------------\n")
+time.sleep(1.5)
+print("The current parameters are: \n \n - Total gas density: "+str(n_tot)+"\n - Gas ratio: "+str(am_N2)+"% nitrogen, "+str(100.-am_N2)+"% hydrogen\n - pre-ionization-level: "+str(pre_ion_level)+"\n")
 
 
 main_menu = input("Press 'ENTER' to start or type 'e' to edit the values\n")
 
 if main_menu == "e":
-	print("---------------\nParameter menu:\n---------------")
+	print("------------------------------------------------------------------------\n> Parameter menu:\n")
 	while 1:
-		sub_menu_1 = input("Type in one of the given button to change the corresponding parameter:\n\nn: Total initial gas density\na: Amount of nitrogen (in percent)\np: Pre-ion level\n\nType in 'e' to go back ")
+		sub_menu_1 = input("Type in one of the given button to change the corresponding parameter:\n\n n: Total initial gas density\n a: Amount of nitrogen (in percent)\n p: Pre-ion level\n\nType in 'e' to go back ")
 		if sub_menu_1 == "n":
 			n_tot = input("\nType in a new value for the total initial gas density and press 'ENTER': ")
 		elif sub_menu_1 == "a":
@@ -56,9 +62,9 @@ if main_menu == "e":
 		elif sub_menu_1 =="e":
 			break
 
-	print("----------\nParameters edited. The current values are:\n\nTotal initial gas density: "+str(n_tot)+"\nInitial amount of nitrogen: "+str(am_N2)+"%\nPre-ionization level: "+str(pre_ion_level)+"\n")
+	print("------------------------------------------------------------------------\n> Parameters edited!\n\nThe current values are:\n\n- Total initial gas density: "+str(n_tot)+"\n- Initial amount of nitrogen: "+str(am_N2)+"%\n- Pre-ionization level: "+str(pre_ion_level)+"\n")
 	not input("Press 'ENTER' to start\n")
-print("---------------\nOperation started\n---------------\n")
+print("-----------------------\nOperation started\n-----------------------\n")
 	
 time.sleep(1.5)
 ### Calculations for the gas densities profile
@@ -215,4 +221,5 @@ if show_plot == "y":
 	time.sleep(1)
 	show()
 
-print("------------\nFinished\n------------")
+print("-----------------------\nFinished\n-----------------------")
+
