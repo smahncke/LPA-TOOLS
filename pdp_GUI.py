@@ -172,14 +172,19 @@ time.sleep(0.5)
 ### Plot the functions (plasma densities)
 
 fig, ax = plt.subplots(figsize=(20,10))
-#fig = plt.figure(figsize=(30,15))
+
 plt.xlabel("z [mm]")
 plt.ylabel(r"$n_e$")
+   
+ax.set_xticks(np.arange(0, (2*ramp_start+2*ramp_length+plateau)*1e3, 1) )                                                       
+ax.set_xticks(np.arange(0, (2*ramp_start+2*ramp_length+plateau)*1e3, 0.2), minor=True)                                           
+ax.set_yticks(np.arange(0, n_tot*10, 1e24))                                                       
+ax.set_yticks(np.arange(0, n_tot*10, 0.2e24), minor=True)   
 
-#ax.plot(ts.t*c*1e3, a0_ts,color='red')
+ax.grid(which='major', alpha=0.8, color='grey', linestyle='--', linewidth=0.6, animated='True')
+ax.grid(which='minor', alpha=0.6, color='grey', linestyle='--', linewidth=0.5, animated='True')
 
-#ax.twinx()
-
+# Plot the densities
 ax.plot(ts.t*c*1e3, e_dens_tot, linestyle='--' ,color='grey', label="$n_e (tot)$")
 ax.plot(ts.t*c*1e3, e_dens_H2_init, linestyle='--' ,color='#31B5D6', label="$n_e (H2\,init)$")
 ax.plot(ts.t*c*1e3, e_dens_N2_init, linestyle='--', color='#7BC618', label="$n_e (N2\,init)$")
@@ -187,6 +192,10 @@ ax.plot(ts.t*c*1e3, e_dens_H2,color='#005263', label="$n_e (H2)$")
 ax.plot(ts.t*c*1e3, e_dens_N2_rest,color='#218429', label="$n_e (N2)$")
 ax.plot(ts.t*c*1e3, e_dens_N2_ionized,linestyle='--', color='#FF8429', label="$\Delta n_e$")
 
+#Plot the laser amplitude
+ax_las = ax.twinx()
+plt.ylabel(r"$a_0$", color="red")
+ax_las.plot(ts.t*c*1e3, a0_ts,color='red')
 
 legend = ax.legend(loc='upper right', shadow=True)
 for label in legend.get_texts():
