@@ -4,6 +4,8 @@
 
 PDP is an interactive script, which plots plasma density profile for ionization-induced trapping laser plasma accelerators (see an example of a plot below).
 
+NOTE: This code is just for experimental use at the moment. It's not finished yet.
+
 # REQUIREMENTS:
 
 - A python distribution should be installed to run the code (i.e. Anaconda, see https://docs.anaconda.com/)
