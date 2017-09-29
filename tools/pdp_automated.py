@@ -9,40 +9,46 @@ from pylab import title, show
 from opmd_viewer.addons.pic import LpaDiagnostics as OpenPMDTimeSeries
 from scipy.constants import c
 
-### Global settings
+### IMPORT THE DIAGNOSTICS
 
 ts = OpenPMDTimeSeries('./diags/hdf5/') #The simulation files which should be imported
 
-### THE GAS
+### INITIAL GLOBAL PARAMETERS
 
 n_tot = 1e18*1e6  # Total gas density
-am_N2 = 1.   #Amount of total N2 molecules (including pre-ionized and non pre-ionized ones) in percent
-#pre_ion_level = int(input("Pre-Ion-Level"))
+
+am_N2 = 1   #Amount of total initial N2 molecules (including pre-ionized and non pre-ionized ones) in percent
+max_am_N2 = 2 #The amount of N2 at which the automated script should stop (in percent)
+am_N2_step = 1 #The loop step of the simulation (in percent)
+
 pre_ion_level = 0 #The pre-ionization level of the N2 (0 = no pre-ionization)
 max_ion_level = 7 # The highest possible ionization level (7 for nitrogen)
 E_ion = [5,10,15,20,25,30,35] # The ionization energy levels of N2
 #E_ion = [14.53414, 29.6013, 47.44924, 77.4735, 97.8902, 552.0718, 667.046] #Ionization energies of N2 in eV
 
-# The dope gas density profile (Gauss)
+### THE DENSITY PROFILES
 
 FWHM = 300.e-6 #FWHM of the gauss function in m
 ramp_start = 30.e-6 # The starting point of the density profile upramp
 ramp_length = 500.e-6 # The length of the ramp
 plateau = 4000.e-6 # The length of the plateau
 
-max_am_N2 = 3
-am_N2_step = 1
 
-#################################################################################################################
-#														#
-#				DON'T CHANGE ANYTHING BELOW THIS LINE						#
-#														#
-#################################################################################################################
+
+#####################################################################
+#																	#
+#				DON'T CHANGE ANYTHING BELOW THIS LINE				#
+#																	#
+#####################################################################
+
+### START SCREEN
 
 print("\n---------------- Density Profile Analytics ----------------\n \n The current parameters are: \n \n - Total gas density: "+str(n_tot)+"\n - Initial gas ratio: "+str(am_N2)+"% nitrogen, "+str(100.-am_N2)+"% hydrogen\n - Final gas ratio: "+str(max_am_N2)+"% nitrogen, "+str(100.-max_am_N2)+"% hydrogen\n - N2 loop step: "+str(am_N2_step)+"\n-----------------------------------------------------------\n")
 
 
 main_menu = input("Press 'ENTER' to start or type 'e' to edit the values\n")
+
+### EDIT MENU
 
 if main_menu == "e":
 	print("----------------------------------------\nParameter menu:\n----------------------------------------")
@@ -66,32 +72,33 @@ print("----------------------------------------\nOperation started\n------------
 time.sleep(0.5)
 
 
-### Calculations for the gas densities profile
+###### MAIN SCRIPT ######
 
-# Parameters of the gaussian profile
 mu = ramp_start + ramp_length # mu of the gaussian dope gas density profile
 sigma = FWHM/(2*(np.sqrt(2*np.log(2)))) # sigma of the gaussian density profile
 r=1
 
 
-print("Total number of plots: "+str(8*((max_am_N2+1)-am_N2)/am_N2_step)+"...")
+print("Total number of plots: "+str(8*((max_am_N2+1)-am_N2)/am_N2_step)+"...") #Prints out the total number of plots
 
 time.sleep(1)
 
-### IONIZATION & DENSITY ARRAYS
-for y in range(int(am_N2),max_am_N2+1):
+## LOOP 1: Varies the amount of nitrogen 
+for y in range(int(am_N2),max_am_N2+1):	
 	print("\nCurrent amount of nitrogen: "+str(am_N2)+"%")
-	if not os.path.exists(os.path.dirname("plots/N2_"+str(am_N2)+"/")):
+	if not os.path.exists(os.path.dirname("plots/N2_"+str(am_N2)+"/")): #Creates the directory in which the plots will be saved (if it doesn't already exist)
 		os.makedirs(os.path.dirname("plots/N2_"+str(am_N2)+"/"))
 
 	# Gas densities
 	am_H2 = 100. - am_N2 #Amount of (already pre-ionized) H2
-	n_gas_H2 = (am_H2/100)*n_tot # gas density of H2
+	n_gas_H2 = (am_H2/100)*n_tot # gas density of H2 
 	n_gas_N2 = (am_N2/100)*n_tot # gas density of N2
 
 	# Plasma densities
 	n_plas_H2 = n_gas_H2*2. #Plasma density of the H2 (without the pre-ionized electrons)
 	n_plas_N2 = n_gas_N2*2 #Plasma density of the N2 (without pre-ionization)
+	
+	## LOOP 2: Varies the pre-ionization level
 	for x in range(0,8):
 		sys.stdout.write("\r" + "Status: " + str(int((x/7)*100)) + " % (Plot "+str(x+1)+" of 8)")
 		n_e_N2_init = max_ion_level*n_plas_N2 #Electron density of the initial N2
@@ -105,17 +112,16 @@ for y in range(int(am_N2),max_am_N2+1):
 		delta_n = a0_ts.copy() # The amount of electrons, which goes into the H2 due to laser ionization 
 		n_e_N2_rest_ionized = a0_ts.copy() 
 
-		e_dens_N2_ionized = a0_ts.copy()
-		e_dens_N2_rest = a0_ts.copy()
-		e_dens_N2_init = a0_ts.copy()
+		e_dens_N2_ionized = a0_ts.copy() # electron density array of the electrons, which go from the nitrogen to the hydrogen due to laser ionization
+		e_dens_N2_rest = a0_ts.copy() # electron density array of resulting nitrogen gas after laser ionization
+		e_dens_N2_init = a0_ts.copy() # electron density array of the initial nitrogen gas
 
-		e_dens_tot = a0_ts.copy()
-		e_dens_H2 = a0_ts.copy()
-		e_dens_H2_init = a0_ts.copy()
-
-		for ii, t in enumerate(ts.t): # A for loop over the whole plasma
-			#sys.stdout.write("\r" + "Status: " + str(int((ii/(len(ts.t)))*100)+1) + " %")
-	
+		e_dens_tot = a0_ts.copy() # Total electron density
+		e_dens_H2 = a0_ts.copy() # electron density array of the resulting hydrogen gas after laser ionization
+		e_dens_H2_init = a0_ts.copy() # electron density array of the initial hydrogen gas
+		
+		### LOOP 3: Creates the plot over the whole plasma length 
+		for ii, t in enumerate(ts.t): 
 			a0_ts[ii] = ts.get_a0(t=t, pol='x')*10 # Gives the laser amplitude for each time step
 	    
 	    # Total density profile
@@ -129,44 +135,43 @@ for y in range(int(am_N2),max_am_N2+1):
 				e_dens_tot[ii] = 0
 			else:
 				e_dens_tot[ii] = n_e_tot
-	    
-			for i in range(0,int(max_ion_level)-1): # Compares the laser amplitude to each ionization energy level of N2
+			
+			### LOOP 4: Checks for every timestep if the laser energy is higher than the ionization levels calculates the resulting density profiles
+			for i in range(0,int(max_ion_level)-1): 
 				if E_ion[i] <= a0_ts[ii] < E_ion[i+1]:
 					delta_n[ii] = n_plas_N2*((i+1)-pre_ion_level)
 				elif a0_ts[ii] >= E_ion[6]:
 					delta_n[ii] = n_plas_N2*(7-pre_ion_level)
 
-				if delta_n[ii] < 0: # Makes sure that the N2 density doesn't get greater by the laser
+				# Makes sure that the N2 density doesn't get greater by the laser
+				if delta_n[ii] < 0: 
 					delta_n[ii] = 0
-	    
-				n_e_N2_rest_ionized[ii] = n_e_N2_rest - delta_n[ii] # The resulting N2 electron density AFTER laser ionization
+				
+				# The resulting N2 electron density AFTER laser ionization
+				n_e_N2_rest_ionized[ii] = n_e_N2_rest - delta_n[ii] 
 
-				if n_e_N2_rest_ionized[ii] <= 1e10: # Compensates rounding errors of the density
+				# Compensates rounding errors of the density
+				if n_e_N2_rest_ionized[ii] <= 1e10: 
 					n_e_N2_rest_ionized[ii] = 0  
 		    
-		# The initial electron density of N2 (with pre-ionization, but without laser-ionization)
+				# The initial electron density of N2 (with pre-ionization, but without laser-ionization)
 				e_dens_N2_init[ii] = n_e_N2_rest*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 
 		
-		# The initial electron density of H2 (with pre-ionization, but without laser-ionization)
+				# The initial electron density of H2 (with pre-ionization, but without laser-ionization)
 				e_dens_H2_init[ii] = e_dens_tot[ii] - e_dens_N2_init[ii]
 		
-		# The electron density, which goes from the N2 to the H2 due to laser ionization:
+				# The electron density, which goes from the N2 to the H2 due to laser ionization:
 				e_dens_N2_ionized[ii] = delta_n[ii]*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 
 		
-		# The rest of the N2 electron density
+				# The rest of the N2 electron density
 				e_dens_N2_rest[ii] = n_e_N2_rest_ionized[ii]*np.exp(-((c*t)-mu)**2/(2*sigma**2))
 		
-		
-
-		
-	    # H2 density profile
-
+			# H2 density profile
 			e_dens_H2[ii] = e_dens_tot[ii] - e_dens_N2_rest[ii]
 
-		### Plot the functions (plasma densities)
-
+		
+		### MAKING THE PLOTS
 		fig, ax = plt.subplots(figsize=(20,10))
-		#fig = plt.figure(figsize=(30,15))
 		plt.xlabel("z [mm]")
 		plt.ylabel(r"$n_e$")
 
@@ -181,8 +186,7 @@ for y in range(int(am_N2),max_am_N2+1):
 		ax.plot(ts.t*c*1e3, e_dens_N2_rest,color='#218429', label="$n_e (N2)$")
 		ax.plot(ts.t*c*1e3, e_dens_N2_ionized,linestyle='--', color='#FF8429', label="$\Delta n_e$")
 
-
-		legend = ax.legend(loc='upper right', shadow=True)
+		legend = ax.legend(loc='upper right', shadow=True) 
 		for label in legend.get_texts():
 			label.set_fontsize('large')
 
@@ -190,9 +194,12 @@ for y in range(int(am_N2),max_am_N2+1):
 			label.set_linewidth(1.5)  # the legend line width
 		title("Density Profile Analytics\n\n initial gas density: "+str(n_tot)+" [nitrogen: "+str(am_N2)+"%, hydrogen: "+str(am_H2)+"%, pre-ionization level: "+str(pre_ion_level)+"]", bbox={'facecolor': '0.85', 'pad': 10})
 
+		# Saves the plots as a png file
 		fig.savefig("plots/N2_"+str(am_N2)+"/dpa_plot_N2_"+str(int(am_N2))+"_preionlvl_"+str(pre_ion_level)+".png")
-
+		
+		# Makes sure, that the CPU doesn't get out of memory
 		plt.close()
+		
 		pre_ion_level += 1
 		sys.stdout.flush()
 	print()
