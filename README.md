@@ -37,4 +37,4 @@ In the 'tools' directory there are some more pdp-scripts. Read the README.md-fil
 
 # Example
 
-https://github.com/smahncke/pdp/blob/master/first_draft.png
+[[ https://github.com/smahncke/pdp/blob/master/first_draft.png?raw=true ]]
