@@ -17,4 +17,5 @@ NOTE: If you want to change parameters like the resolution of the simulation out
 `python FBPIC_example.py` 
 . You have to install FBPIC first, see the documentation.
 3.  If you haven't done yet, install openPMD_viewer (see https://github.com/openPMD/openPMD-viewer)
-4.  Now run 'pdp_example.py' and follow the instructions.
+4.  Now run 'pdp_example.py' in the terminal by typing `phyton pdp_example.py` and follow the instructions.
+
