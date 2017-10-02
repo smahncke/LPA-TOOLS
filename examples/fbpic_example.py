@@ -60,10 +60,10 @@ n_order = -1
 
 # The gas
 dope_element = 'N' # Element the H2 will be doped with (i.e. 'N' or 'He')
-n_init = 0.5e18*1.e6 # Gas density of the doped gas
+n_init = 1.e18*1.e6 # Gas density of the doped gas
 am_H2 = 99. # Amount of H2 particles in percent
 am_dope_gas = 1.  # Amount of dope gas particles in percent (sum of am_H2 and am_dope_gas must be 100 %)
-pre_ion_level = 5. # Pre-ionization level of the dope gas atoms
+pre_ion_level = 0. # Pre-ionization level of the dope gas atoms
 q_dope_gas = e # Charge of the ionized particles (standard value is the electron charge e)
 
 n_H2 = (am_H2/100)*n_init #Gas density of H2
