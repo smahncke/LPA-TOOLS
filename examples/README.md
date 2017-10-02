@@ -14,7 +14,7 @@ NOTE: If you want to change parameters like the resolution of the simulation out
 1.  Download the 'FBPIC_example.py' and the 'pdp_example.py' file. If you don't need to have a higher simulation resolution of the
     Particle-In-Cell code FBPIC you can also just download the 'diags' folder and jump to the third step.
 2.  Run 'FBPIC_example.py' the terminal by typing
-`python FBPIC_example.py
+`python FBPIC_example.py` 
 . You have to install FBPIC first, see the documentation.
 3.  If you haven't done yet, install openPMD_viewer (see https://github.com/openPMD/openPMD-viewer)
 4.  Now run 'pdp_example.py' and follow the instructions.
