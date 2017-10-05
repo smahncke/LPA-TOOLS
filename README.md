@@ -1,4 +1,4 @@
-# Plasma density plotter (pdp)
+# Plasma density analysis (PDA)
 
 # DESCRIPTION:
 
