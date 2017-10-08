@@ -1,8 +1,5 @@
 ###############################
-"""Questions/To do:
-1. Soll am Anfang GAS- oder PLASMADICHTE angegeben werden? Falls GASDICHTE, ist n_e_H2_tot dann IMMER 2*n_tot ?
-2. Existiert Limit für am_N2, sodass immer 2*n_tot eingehalten wird? (Andernfalls wird n_H2 < 0)
-3. Was ist der gewünschte Output? Gas oder Plasmadichte?"""
+#FRIST DRAFT
 ###############################
 
 
