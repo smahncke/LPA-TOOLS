@@ -5,6 +5,7 @@
 
 ### IMPORTS CLASSES
 import numpy as np
+import csv
 import math
 import time
 import os
@@ -20,7 +21,7 @@ ts = OpenPMDTimeSeries('./diags/hdf5/') #The simulation files which should be im
 
 # Gas settings
 n_tot = 1e18*1e6 #Total Plasma Density
-am_N2 = 10 #Amount of nitrogen (in percent)
+am_N2 = 50 #Amount of nitrogen (in percent)
 
 # Density profiles
 
@@ -35,6 +36,10 @@ inj_thres = 6 #The ionization level of N2, at which the electron injection start
 
 ###################################################################################################################################################################
 
+#OS
+
+if not os.path.exists(os.path.dirname('output/N2_'+str(am_N2)+'/')):
+    os.makedirs(os.path.dirname('output/N2_'+str(am_N2)+'/'))
 
 # Gaussian profile
 mu = ramp_start + ramp_length #mu of the gaussian nitrogen density profile
@@ -59,30 +64,44 @@ gas_dens_sum = a0_ts.copy()
 
 #Drawing the density profiles
 
-for ii, t in enumerate(ts.t):
-	if (t*c) < ramp_start:
-		e_dens_tot[ii] = 0
-		gas_dens_tot[ii] = 0
-	elif (t*c) < (ramp_start+ramp_length):
-		e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
-		gas_dens_tot[ii] = n_tot_gas*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
-	elif (t*c) > (ramp_start+ramp_length + plateau):
-		e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/ramp_length)**2
-		gas_dens_tot[ii] = n_tot_gas*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
-	elif (t*c) >= (ramp_start + 2*ramp_length + plateau):
-		e_dens_tot[ii] = 0
-		gas_dens_tot[ii] = 0
-	else:
-		e_dens_tot[ii] = n_tot
-		gas_dens_tot[ii] = n_tot_gas
+with open('output/N2_'+str(am_N2)+'/H2_density.csv', 'w', newline='\n') as H2_array, open('output/N2_'+str(am_N2)+'/N2_density.csv', 'w', newline='\n') as N2_array, open('output/N2_'+str(am_N2)+'/total_gas_density.csv', 'w', newline='\n') as total_gas_array:
+    
+    H2_array_writer = csv.writer(H2_array, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    N2_array_writer = csv.writer(N2_array, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    total_gas_writer = csv.writer(total_gas_array, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    
+    H2_array_writer.writerow(['H2 density'])
+    N2_array_writer.writerow(['N2 density'])
+    total_gas_writer.writerow(['Total gas density'])
+    
+    for ii, t in enumerate(ts.t):
+        if (t*c) < ramp_start:
+            e_dens_tot[ii] = 0
+            gas_dens_tot[ii] = 0
+        elif (t*c) < (ramp_start+ramp_length):
+            e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
+            gas_dens_tot[ii] = n_tot_gas*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
+        elif (t*c) > (ramp_start+ramp_length + plateau):
+            e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/ramp_length)**2
+            gas_dens_tot[ii] = n_tot_gas*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
+        elif (t*c) >= (ramp_start + 2*ramp_length + plateau):
+            e_dens_tot[ii] = 0
+            gas_dens_tot[ii] = 0
+        else:
+            e_dens_tot[ii] = n_tot
+            gas_dens_tot[ii] = n_tot_gas
 
-	gas_dens_N2[ii] = n_gas_N2*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 
+        gas_dens_N2[ii] = n_gas_N2*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 
 	
-	gas_dens_N2_thres[ii] = ((inj_thres-1)/7)*n_gas_N2*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 	
+        gas_dens_N2_thres[ii] = ((inj_thres-1)/7)*n_gas_N2*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 	
 	
-	gas_dens_H2[ii] = gas_dens_tot[ii]-gas_dens_N2_thres[ii]
+        gas_dens_H2[ii] = gas_dens_tot[ii]-gas_dens_N2_thres[ii]
 
-	gas_dens_sum[ii] = gas_dens_H2[ii] + gas_dens_N2[ii]	
+        gas_dens_sum[ii] = gas_dens_H2[ii] + gas_dens_N2[ii]
+        
+        H2_array_writer.writerow([str(gas_dens_H2[ii])])
+        N2_array_writer.writerow([str(gas_dens_N2_thres[ii])])
+        total_gas_writer.writerow([str(gas_dens_tot[ii])])
 
 # Plot the functions
 
@@ -102,10 +121,10 @@ ax.grid(which='minor', alpha=0.6, color='grey', linestyle='--', linewidth=0.5, a
 # Plot the densities
 ax.plot(ts.t*c*1e3, e_dens_tot, linestyle='--' ,color='grey', label="$n_e (tot)$")
 ax.plot(ts.t*c*1e3, gas_dens_tot, linestyle='--' ,color='red', label="$n_{gas} (tot)$")
-ax.plot(ts.t*c*1e3, gas_dens_H2, linestyle='--' ,color='#31B5D6', label="$n_{gas} (H2)$")
-ax.plot(ts.t*c*1e3, gas_dens_N2, linestyle='--', color='#7BC618', label="$n_{gas} (N2)$")
-ax.plot(ts.t*c*1e3, gas_dens_N2_thres, linestyle='--', color='green', label="$n_{gas,thres} (N2)$")
-ax.plot(ts.t*c*1e3, gas_dens_sum, linestyle='--', color='black', label="$n_{gas,real} (tot)$")
+ax.plot(ts.t*c*1e3, gas_dens_H2 ,color='#31B5D6', label="$n_{gas} (H2)$")
+#ax.plot(ts.t*c*1e3, gas_dens_N2, linestyle='--', color='#7BC618', label="$n_{gas} (N2)$")
+ax.plot(ts.t*c*1e3, gas_dens_N2_thres, color='green', label="$n_{gas,thres} (N5+)$")
+#ax.plot(ts.t*c*1e3, gas_dens_sum, linestyle='--', color='black', label="$n_{gas,real} (tot)$")
 
 legend = ax.legend(loc='upper right', shadow=True)
 for label in legend.get_texts():
@@ -113,8 +132,9 @@ for label in legend.get_texts():
 
 for label in legend.get_lines():
     label.set_linewidth(1.5)  # the legend line width
-title("Density Profile Analytics\n\n initial gas density: "+str(n_tot)+" [nitrogen: "+str(am_N2)+"%, hydrogen: "+str(100-am_N2)+"%]", bbox={'facecolor': '0.85', 'pad': 10})
+title("Plasma Density Analyzer\n\n Plasma density: "+str(n_tot)+" [nitrogen: "+str(am_N2)+"%, hydrogen: "+str(100-am_N2)+"%]", bbox={'facecolor': '0.85', 'pad': 10})
 
+fig.savefig("output/N2_"+str(am_N2)+"/dpa_plot_N2_"+str(am_N2)+".png")
 show()
 
 
