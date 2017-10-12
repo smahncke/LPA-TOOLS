@@ -16,7 +16,7 @@ ts = OpenPMDTimeSeries('./diags/hdf5/') #The simulation files which should be im
 
 # Gas settings
 n_tot = 1e18*1e6 #Total Plasma Density
-am_N2 = 30 #Amount of nitrogen (in percent)
+am_N2 = 20 #Amount of nitrogen (in percent)
 
 # Density profiles
 FWHM = 300e-6 #Full-width at half-max of the gaussian density profile (in m)
@@ -66,7 +66,7 @@ for ii, t in enumerate(ts.t):
         e_dens_tot[ii] = 0
     elif (t*c) < (ramp_start+ramp_length):
         e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
-    elif (t*c) > (ramp_start+ramp_length + plateau):
+    elif (ramp_start + 2*ramp_length + plateau)>(t*c)>(ramp_start+ramp_length + plateau):
         e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/ramp_length)**2
     elif (t*c) >= (ramp_start + 2*ramp_length + plateau):
         e_dens_tot[ii] = 0
