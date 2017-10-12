@@ -42,7 +42,6 @@ r=1
 
 am_H2 = 100 - am_N2 #Amount of hydrogen
 
-
 # Initialization of the density arrays
 a0_ts = np.zeros_like(ts.t, dtype=object)
 gas_dens_H2 = a0_ts.copy()
@@ -59,60 +58,48 @@ gas_dens_H2_test = a0_ts.copy()
 
 
 ### Calculating the density profiles
-with open('output/N2_'+str(am_N2)+'/H2_density.csv', 'w', newline='\n') as H2_array, open('output/N2_'+str(am_N2)+'/N2_density.csv', 'w', newline='\n') as N2_array, open('output/N2_'+str(am_N2)+'/total_gas_density.csv', 'w', newline='\n') as total_gas_array:
-    
-    # Initialization of the CSV tables
-    H2_array_writer = csv.writer(H2_array, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    N2_array_writer = csv.writer(N2_array, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    total_gas_writer = csv.writer(total_gas_array, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    
-    # Write the header lines into the CSV files
-    H2_array_writer.writerow(['H2 density'])
-    N2_array_writer.writerow(['N2 density'])
-    total_gas_writer.writerow(['Total gas density'])
-    
-    
-    for ii, t in enumerate(ts.t):
-        
-        # Density of the main plasma
-        if (t*c) < ramp_start:
-            e_dens_tot[ii] = 0
-        elif (t*c) < (ramp_start+ramp_length):
-            e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
-        elif (t*c) > (ramp_start+ramp_length + plateau):
-            e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/ramp_length)**2
-        elif (t*c) >= (ramp_start + 2*ramp_length + plateau):
-            e_dens_tot[ii] = 0
-        else:
-            e_dens_tot[ii] = n_tot
-		
-        #???
-        unknown_dens[ii] = 0.5*e_dens_tot[ii]*(1/(1-(am_N2/100 -(inj_thres-1)*(am_N2/100))*np.exp(-((c*t)-mu)**2/(2*sigma**2))))
-        
-        # Gas density of the nitrogen
-        gas_dens_N2[ii] = (unknown_dens[ii]-0.5*e_dens_tot[ii])*(1/(2-inj_thres))*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 
-        
-        # Electron density of the nitrogen
-        e_dens_N2[ii] = 2*gas_dens_N2[ii]*(inj_thres-1)
-        
-        # Electron density of the hydrogen
-        e_dens_H2[ii] = e_dens_tot[ii] - e_dens_N2[ii]
-        
-        # Gas density of the hydrogen
-        gas_dens_H2[ii] = e_dens_H2[ii]/2
-        
-        # The total gas density
-        gas_dens_tot[ii] = gas_dens_H2[ii]+gas_dens_N2[ii]
-        
-        # Control functions
-        e_dens_tot_test[ii] = 2*gas_dens_H2[ii] + 2*(inj_thres-1)*gas_dens_N2[ii]
-        gas_dens_H2_test[ii] = (e_dens_tot[ii] - 2*(inj_thres-1)*gas_dens_N2[ii])/2 
-        
-        # Write the data into the CSV files
-        H2_array_writer.writerow([str(gas_dens_H2[ii])])
-        N2_array_writer.writerow([str(gas_dens_N2[ii])])
-        total_gas_writer.writerow([str(gas_dens_tot[ii])])
 
+for ii, t in enumerate(ts.t):
+        
+    # Density of the main plasma
+    if (t*c) < ramp_start:
+        e_dens_tot[ii] = 0
+    elif (t*c) < (ramp_start+ramp_length):
+        e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/(ramp_length))**2
+    elif (t*c) > (ramp_start+ramp_length + plateau):
+        e_dens_tot[ii] = n_tot*np.sin((0.5*np.pi*(t*c-ramp_start))/ramp_length)**2
+    elif (t*c) >= (ramp_start + 2*ramp_length + plateau):
+        e_dens_tot[ii] = 0
+    else:
+        e_dens_tot[ii] = n_tot
+		
+    #???
+    unknown_dens[ii] = 0.5*e_dens_tot[ii]*(1/(1-(am_N2/100 -(inj_thres-1)*(am_N2/100))*np.exp(-((c*t)-mu)**2/(2*sigma**2))))
+        
+    # Gas density of the nitrogen
+    gas_dens_N2[ii] = (unknown_dens[ii]-0.5*e_dens_tot[ii])*(1/(2-inj_thres))*np.exp(-((c*t)-mu)**2/(2*sigma**2)) 
+        
+    # Electron density of the nitrogen
+    e_dens_N2[ii] = 2*gas_dens_N2[ii]*(inj_thres-1)
+        
+    # Electron density of the hydrogen
+    e_dens_H2[ii] = e_dens_tot[ii] - e_dens_N2[ii]
+        
+    # Gas density of the hydrogen
+    gas_dens_H2[ii] = e_dens_H2[ii]/2
+        
+    # The total gas density
+    gas_dens_tot[ii] = gas_dens_H2[ii]+gas_dens_N2[ii]
+        
+    # Control functions
+    e_dens_tot_test[ii] = 2*gas_dens_H2[ii] + 2*(inj_thres-1)*gas_dens_N2[ii]
+    gas_dens_H2_test[ii] = (e_dens_tot[ii] - 2*(inj_thres-1)*gas_dens_N2[ii])/2 
+        
+
+# Save the arrays as a .dat file
+np.savetxt('output/N2_'+str(am_N2)+'/N2_density.dat', gas_dens_N2, delimiter=',')
+np.savetxt('output/N2_'+str(am_N2)+'/H2_density.dat', gas_dens_H2, delimiter=',')
+np.savetxt('output/N2_'+str(am_N2)+'/tot_gas_density.dat', gas_dens_tot, delimiter=',')
 
 ### Plot the functions
 
