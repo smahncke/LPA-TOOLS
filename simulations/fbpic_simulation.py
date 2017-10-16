@@ -91,14 +91,14 @@ use_restart = False      # Whether to restart from a previous checkpoint
 track_electrons = True  # Whether to track and write particle ids
 
 #Gas and plasma properties
-n_tot = 1e18*1e6    #Total plasma density
-am_N2 = 5          #Amount of nitrogen (in percent)
-FWHM = 300e-6       #Full-width at half-max of the gaussian density profile (in m)
+n_tot = 1.e18*1e6    #Total plasma density
+am_N2 = 100.          #Amount of nitrogen (in percent)
+FWHM = 300.e-6       #Full-width at half-max of the gaussian density profile (in m)
 
 #Target properties 
-ramp_start = 30e-6      #Start point of the resulting plasma upramp (in m)
-ramp_length = 500e-6    #The length of the upramp and the downramp (in m)
-plateau = 4000e-6       #The length of the plateau (in m)
+ramp_start = 30.e-6      #Start point of the resulting plasma upramp (in m)
+ramp_length = 500.e-6    #The length of the upramp and the downramp (in m)
+plateau = 4000.e-6       #The length of the plateau (in m)
 
 # Other settings
 inj_thres = 6           #The ionization level of N2, at which the electron injection starts
@@ -113,10 +113,10 @@ inj_thres = 6           #The ionization level of N2, at which the electron injec
 mu = ramp_start + ramp_length           #mu of the gaussian nitrogen density profile
 sigma = FWHM/(2*(np.sqrt(2*np.log(2))))  #sigma of the gaussian density profile
 
-am_H2 = 100 - am_N2 #Amount of hydrogen
+am_H2 = 100. - am_N2 #Amount of hydrogen
 
 #The final plasma density function
-def dens_func_e(z,r):
+def dens_func_plasma(z,r):
     
     #Initialize the array
     e_dens_tot = np.zeros_like(z, dtype=object)
@@ -135,15 +135,15 @@ def dens_func_e(z,r):
 def dens_func_N2(z,r):
     
     #Load the plasma density
-    e_dens_tot = dens_func_e(z,r)
+    e_dens_tot = dens_func_plasma(z,r)
     
     #Initialize the arrays
     gas_dens_N2 = np.zeros_like(z,dtype=object)
-    unknown_dens = gas_dens_N2.copy()
+    temp_dens = gas_dens_N2.copy()
     
     #Calculate the density
-    unknown_dens= 0.5*e_dens_tot*(1/(1-(am_N2/100 -(inj_thres-1)*(am_N2/100))*np.exp(-(z-mu)**2/(2*sigma**2))))
-    gas_dens_N2 = (unknown_dens-0.5*e_dens_tot)*(1/(2-inj_thres))*np.exp(-(z-mu)**2/(2*sigma**2))
+    temp_dens= 0.5*e_dens_tot*(1/(1-(am_N2/100 -(inj_thres-1)*(am_N2/100))*np.exp(-(z-mu)**2/(2*sigma**2))))
+    gas_dens_N2 = (temp_dens-0.5*e_dens_tot)*(1/(2-inj_thres))*np.exp(-(z-mu)**2/(2*sigma**2))
     
     return(gas_dens_N2)
 
@@ -151,7 +151,7 @@ def dens_func_N2(z,r):
 def dens_func_H2(z,r):
     
     #Load the plasma and the nitrogen density
-    e_dens_tot = dens_func_e(z,r)
+    e_dens_tot = dens_func_plasma(z,r)
     gas_dens_N2 = dens_func_N2(z,r)
     
     #Initialize the arrays
@@ -160,7 +160,7 @@ def dens_func_H2(z,r):
     e_dens_H2 = gas_dens_H2.copy()
     
     # Electron density of the nitrogen
-    e_dens_N2 = 2*gas_dens_N2*(inj_thres-1)
+    e_dens_N2 = 2.*gas_dens_N2*(inj_thres-1)
     
     # Electron density of the hydrogen
     e_dens_H2 = e_dens_tot - e_dens_N2
@@ -169,8 +169,31 @@ def dens_func_H2(z,r):
     gas_dens_H2 = e_dens_H2/2
     
     return(gas_dens_H2)
-    
 
+# The electron density that causes the acceleration
+def dens_func_e(z,r):
+    
+    # Load the gas densities
+    gas_dens_N2 = dens_func_N2(z,r)
+    gas_dens_H2 = dens_func_H2(z,r)
+
+    #Calculate the electron density out of the gas densities
+    electron_density = 2.*(inj_thres-1)*gas_dens_N2 + 2.*gas_dens_H2
+
+    return(electron_density)
+
+# The N5+ density
+def dens_func_N2_thres(z,r):
+    
+    # Load the N2 gas density
+    gas_dens_N2 = dens_func_N2(z,r)
+
+    # Calculate the threshold out of the gas density
+    N2_thres_dens = 2.*gas_dens_N2
+
+    return(N2_thres_dens)
+
+    
 
 # ---------------------------
 # Carrying out the simulation
@@ -189,18 +212,30 @@ if __name__ == '__main__':
     # Initialize the simulation object
     sim = Simulation( Nz, zmax, Nr, rmax, Nm, dt,
         p_zmin, p_zmax, p_rmin, p_rmax, p_nz, p_nr, p_nt, 1,
-        dens_func=dens_func_H2, zmin=zmin, boundaries='open',
+        dens_func=None, zmin=zmin, boundaries='open',
         n_order=n_order, use_cuda=use_cuda )
     
-    # Add the N atoms
+    # Reset the list of particles
+    sim.ptcl = []
+    
     p_zmin, p_zmax, Npz = adapt_to_grid( sim.fld.interp[0].z,
                                         p_zmin, p_zmax, N_nz )
     p_rmin, p_rmax, Npr = adapt_to_grid( sim.fld.interp[0].r,
                                         p_rmin, p_rmax, N_nr )
+    
+    # Add the electrons (H2 electrons plus N2(5+) electrons
+    sim.ptcl.append(
+        Particles(e, m_p, 1, Npz, p_zmin,
+            p_zmax, Npr, p_rmin, p_rmax,
+            N_nt, dt, use_cuda=use_cuda, dens_func=dens_func_e,
+            grid_shape=sim.fld.interp[0].Ez.shape,
+            continuous_injection=True ) )
+          
+    # Add the non ionized nitrogen atoms 
     sim.ptcl.append(
         Particles(e, 14*m_p, 1, Npz, p_zmin,
             p_zmax, Npr, p_rmin, p_rmax,
-            N_nt, dt, use_cuda=use_cuda, dens_func=dens_func_N2,
+            N_nt, dt, use_cuda=use_cuda, dens_func=dens_func_N2_thres,
             grid_shape=sim.fld.interp[0].Ez.shape,
             continuous_injection=True ) )
             
