@@ -92,7 +92,7 @@ track_electrons = True  # Whether to track and write particle ids
 
 #Gas and plasma properties
 n_tot = 1e18*1e6    #Total plasma density
-am_N2 = 100          #Amount of nitrogen (in percent)
+am_N2 = 5          #Amount of nitrogen (in percent)
 FWHM = 300e-6       #Full-width at half-max of the gaussian density profile (in m)
 
 #Target properties 
