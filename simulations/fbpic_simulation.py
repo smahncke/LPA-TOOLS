@@ -212,24 +212,13 @@ if __name__ == '__main__':
     # Initialize the simulation object
     sim = Simulation( Nz, zmax, Nr, rmax, Nm, dt,
         p_zmin, p_zmax, p_rmin, p_rmax, p_nz, p_nr, p_nt, 1,
-        dens_func=None, zmin=zmin, boundaries='open',
+        dens_func=dens_func_e, zmin=zmin, boundaries='open',
         n_order=n_order, use_cuda=use_cuda )
-    
-    # Reset the list of particles
-    sim.ptcl = []
     
     p_zmin, p_zmax, Npz = adapt_to_grid( sim.fld.interp[0].z,
                                         p_zmin, p_zmax, N_nz )
     p_rmin, p_rmax, Npr = adapt_to_grid( sim.fld.interp[0].r,
                                         p_rmin, p_rmax, N_nr )
-    
-    # Add the electrons (H2 electrons plus N2(5+) electrons
-    sim.ptcl.append(
-        Particles(e, m_p, 1, Npz, p_zmin,
-            p_zmax, Npr, p_rmin, p_rmax,
-            N_nt, dt, use_cuda=use_cuda, dens_func=dens_func_e,
-            grid_shape=sim.fld.interp[0].Ez.shape,
-            continuous_injection=True ) )
           
     # Add the non ionized nitrogen atoms 
     sim.ptcl.append(
