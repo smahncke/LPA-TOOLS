@@ -39,7 +39,7 @@ There are some output files that will be saved in the 'output' folder:
 
 # EXAMPLE
 
-![alt Example](https://github.com/smahncke/pdp/blob/master/first_draft.png?raw=true)
+![alt Example](https://github.com/smahncke/pdp/blob/master/example_plot.png?raw=true)
 
 # OLDER VERSIONS
 
