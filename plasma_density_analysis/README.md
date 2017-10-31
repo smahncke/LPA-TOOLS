@@ -2,7 +2,7 @@
 
 # DESCRIPTION:
 
-PDA is a simple python script that plots gas density profiles for ionization-induced trapping laser plasma accelerators (see an example of a plot below).
+PDA is a simple python script that plots gas density profiles of a gas mixture (nitrogen & hydrogen) for (ionization-induced trapping) laser plasma accelerators (see an example of a plot below) that are needed for a smooth plasma density for post-acceleration.
 
 # REQUIREMENTS:
 
@@ -20,11 +20,9 @@ PDA is a simple python script that plots gas density profiles for ionization-ind
 # HOW TO USE:
 
 1. Make sure the requirements are fulfilled.
-2. Create a bunch of .hdf5 diagnostic files by running the Particle-In-Cell code FBPIC (see above). Make sure that the 'diags' 
-   folder is in the same directory like the pdp script.
-3. Open the python file in a text editor and set the initial values of the FWHM, final electron density and nitrogen amount in a way you want them to be. 
-4. Start the script in a terminal by typing 'python pda_main.py'.
-5. That's it.
+2. Open the python file in a text editor and set the initial values of the FWHM, final electron density and nitrogen amount in a way you want them to be. 
+3. Start the script in a terminal by typing 'python pda_main.py'.
+4. That's it.
       
 # OUTPUTS:
 
@@ -41,9 +39,11 @@ There are some output files that will be saved in the 'output' folder:
 
 ![alt Example](https://github.com/smahncke/pdp/blob/master/example_plot.png?raw=true)
 
-# OLDER VERSIONS
+# OTHER TOOLS:
 
-The older versions of this script will be saved in the 'source' folder. 
+1. Analyzer: Plots the actual gas densities of hydrogen, nitrogen and the total gas density. 
+2. Simulations: Standard [FBPIC](https://github.com/fbpic/fbpic) simulation that uses ionization-induced trapping
+
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
 
