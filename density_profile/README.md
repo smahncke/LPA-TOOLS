@@ -42,7 +42,7 @@ There are some output files that will be saved in the 'output' folder:
 # OTHER TOOLS:
 
 1. Analyzer: Plots the actual gas densities of hydrogen, nitrogen and the total gas density. 
-2. Simulations: Standard [This link](http://example.com/ "Title") Test
+2. Simulations: Standard [FBPIC](https://github.com/fbpic/fbpic) simulation that uses ionization-induced trapping
 
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
