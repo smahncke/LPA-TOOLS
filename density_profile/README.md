@@ -2,7 +2,7 @@
 
 # DESCRIPTION:
 
-PDA is a simple python script that plots gas density profiles for (ionization-induced trapping) laser plasma accelerators (see an example of a plot below).
+PDA is a simple python script that plots gas density profiles of a gas mixture (nitrogen & hydrogen) for (ionization-induced trapping) laser plasma accelerators (see an example of a plot below) that are needed for a smooth plasma density for post-acceleration.
 
 # REQUIREMENTS:
 
@@ -38,6 +38,11 @@ There are some output files that will be saved in the 'output' folder:
 # EXAMPLE
 
 ![alt Example](https://github.com/smahncke/pdp/blob/master/example_plot.png?raw=true)
+
+# OTHER TOOLS:
+
+1. Analyzer: Plots the actual gas densities of hydrogen, nitrogen and the total gas density. 
+2. Simulations: Standard [This link](http://example.com/ "Title") Test
 
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
