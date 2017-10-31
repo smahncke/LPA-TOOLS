@@ -20,6 +20,10 @@ To get the best results in laser-plasma-acceleration, the plateau of the plasma 
 
 This tool plots the total gas density, the nitrogen gas density and the hydrogen gas density that are needed for a smooth plasma density plateau.
 
+## Requirements:
+
+All tools are python scripts, so you should've installed a python distribution, for example Anaconda, see https://www.anaconda.com/download/
+
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
 
 
