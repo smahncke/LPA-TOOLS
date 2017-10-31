@@ -1,3 +1,13 @@
+"""
+- RESPOSITORY:	LPA-II TOOLS
+- CATEGORY: 	TUNNELING IONIZATION PROBABILITY
+- DATE:			10/30/2017
+
+- INFO:	Plots a 2D plot that shows the probability of tunneling ionization for an electron that
+		will be born at rest in dependence of the laser amplitude.		
+
+"""
+
 #IMPORTS
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,9 +15,8 @@ from pylab import title, show
 from scipy.constants import e, c, m_e, h, alpha, hbar
 
 #Initial parameters
-lambda_0 = 0.8e-6 #laser wavelength in m
-initial_energy = 1e3 #initial energy of the ionized electrons (in eV)
-E_L = 8.e12 #Field of the laser in V/m
+lambda_0 = 800e-9 #laser wavelength in m
+initial_energy = 0e3 #initial energy of the ionized electrons (in eV)
 element = 'Ar' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
 
 
@@ -33,6 +42,7 @@ else:
 #Physical constants
 lambda_c = h/(m_e * c) #compton wavelength
 U_H = 13.6 #ionization potential of hydrogen in eV
+epsilon_0 = 8.854e-12 #Vacuum permittivity
 
 #Other parameters
 k_0 = 1/lambda_0 #wave number of the laser
@@ -51,6 +61,9 @@ def ion_prob(U_i,amplitude):
 	#Keldysh parameter
 	gamma_k = (alpha/amplitude)*np.sqrt(U_i/U_H) 
     
+	#Calculate the electrical field of the laser (in V/m)
+	E_L = 1e2*np.sqrt(2.8e18/(lambda_0*1e6*c*epsilon_0))*amplitude #Electrical field of the laser in V/m
+	
     #Argument of the exponential function
 	laser_ion = lambda_0/lambda_c * amplitude**3 *gamma_k**3 * (E_k/(E_L))
 	tunnel_ion = (gamma_k**3 * energy)/(hbar*omega_0)
@@ -59,18 +72,6 @@ def ion_prob(U_i,amplitude):
 	prob = np.exp(-2/3 * (laser_ion + tunnel_ion))
     
 	return(prob)
-
-def energy_spread(U_i):
-	"""	Input: U_i (float): Potential of the ionization level (in eV)
-		Output: delta_E (float): Energy spread of the corresponding ionization level
-	"""
-	#Keldysh parameter	
-	gamma_k = (alpha/amplitude)*np.sqrt(U_i/U_H) 
-
-	#Energy spread
-	delta_E = 3*hbar*omega_0/(2*e*1e6*gamma_k**3)
-
-	return(delta_E)
 
 #The possible energy range
 a0 = np.linspace(0.01,2.5,1000)
@@ -99,7 +100,7 @@ for label in legend.get_texts():
 
 for label in legend.get_lines():
     label.set_linewidth(1.5)  # the legend line width
-title("Ionization probability [ $\lambda_0 =$ "+str(lambda_0*1.e9)+" nm, $\epsilon =$"+str(energy/e)+" eV , $|E_L| =$"+str(E_L/1.e12)+" TV/m]", bbox={'facecolor': '0.85', 'pad': 10})
+title("Ionization probability [ $\lambda_0 =$ "+str(lambda_0*1.e9)+" nm, $\epsilon =$"+str(energy/e)+" eV", bbox={'facecolor': '0.85', 'pad': 10})
 
 # Opens the plot
 show()
