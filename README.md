@@ -1,51 +1,24 @@
 # Laser-plasma-acceleration tools (LPA-TOOLS)
 
-## Plasma density analysis (PDA)
+## SHORT DESCRIPTION: 
 
-### DESCRIPTION:
+This repository includes a bunch of simple tools for simulations of laser-plasma-acceleration, especially ionization-induced trapping in laser-plasma-accelerators.
 
-PDA is a simple python script that plots gas density profiles of a gas mixture (nitrogen & hydrogen) for (ionization-induced trapping) laser plasma accelerators (see an example of a plot below) that are needed for a smooth plasma density for post-acceleration.
+## FEATURES:
 
-### REQUIREMENTS:
+This is a short overview of the features that are included in this repository. See the README file in the respective folder for more detailed information, there are also examples.
 
-- A python distribution should be installed to run the code (i.e. Anaconda, see https://docs.anaconda.com/)
+### Tunnel ionization probability (TIP):
 
-### FEATURES:
+For ionization-induced trapping in laser-plasma-accelerators it is useful to know, what kind of gas (i.e. nitrogen, argon or krypton) will be ionized at which laser amplitude and what the corresponding initial energy of the ionized electrons is. 
 
-- The initial amount of N2 can be set arbitrarily. 
-- The density profile of the nitrogen corresponds to a gauss profile. The FWHM (full-width at half max) of this 
-  gauss profile can be set arbitrarily
-- The nitrogen gas can be chosen pre-ionized or non pre-ionized
-- Some parameters like the upramp length and the length of the hydrogen density profile can be set manually
+This tool plots the tunneling ionization probability in dependence of the initial electron energy or/and the laser amplitude.
 
+### Plasma density analysis (PDA):
 
-### HOW TO USE:
+To get the best results in laser-plasma-acceleration, the plateau of the plasma density for post acceleration should be smooth, even if you dope the hydrogen gas temporarily with a small amount of a high-Z gas (for example nitrogen). 
 
-1. Make sure the requirements are fulfilled.
-2. Open the python file in a text editor and set the initial values of the FWHM, final electron density and nitrogen amount in a way you want them to be. 
-3. Start the script in a terminal by typing 'python pda_main.py'.
-4. That's it.
-      
-### OUTPUTS:
-
-There are some output files that will be saved in the 'output' folder:
-
-1. The plot of the gas density profiles
-2. The arrays of the gas densities (nitrogen density, hydrogen density and the total density)
-
-### KNOWN BUGS/ISSUES:
-
-(There are no known issues at the moment. Feel free to contact me (sebastian.mahncke@desy.de) if you found some bugs)
-
-### EXAMPLE
-
-![alt Example](https://github.com/smahncke/pdp/blob/master/example_plot.png?raw=true)
-
-### OTHER TOOLS:
-
-1. Analyzer: Plots the actual gas densities of hydrogen, nitrogen and the total gas density. 
-2. Simulations: Standard [FBPIC](https://github.com/fbpic/fbpic) simulation that uses ionization-induced trapping
-
+This tool plots the total gas density, the nitrogen gas density and the hydrogen gas density that are needed for a smooth plasma density plateau.
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
 
