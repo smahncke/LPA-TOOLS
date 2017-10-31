@@ -36,8 +36,8 @@ Depends on the script:
 
 (There are no known issues at the moment. Feel free to contact me (sebastian.mahncke@desy.de) if you found some bugs)
 
-### EXAMPLES
-
+### EXAMPLES:
+(Click on the image)
 1. Example of 'laser_prob_2D':
 ![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/examples/example_2D_Argon.png?raw=true)
 
