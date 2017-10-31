@@ -1,10 +1,11 @@
 # Laser-plasma-acceleration tools (LPA-TOOLS)
 
-## Plasma density analysis (PDA)
+## Tunnel ionization probability (TIP)
 
 ### DESCRIPTION:
 
-PDA is a simple python script that plots gas density profiles of a gas mixture (nitrogen & hydrogen) for (ionization-induced trapping) laser plasma accelerators (see an example of a plot below) that are needed for a smooth plasma density for post-acceleration.
+TIP is a python script that plots the tunnel ionization probability due to laser ionization for different gases in 
+dependence of typical parameters used for laser plasma acceleration, i.e. laser amplitude.
 
 ### REQUIREMENTS:
 
@@ -12,39 +13,36 @@ PDA is a simple python script that plots gas density profiles of a gas mixture (
 
 ### FEATURES:
 
-- The initial amount of N2 can be set arbitrarily. 
-- The density profile of the nitrogen corresponds to a gauss profile. The FWHM (full-width at half max) of this 
-  gauss profile can be set arbitrarily
-- The nitrogen gas can be chosen pre-ionized or non pre-ionized
-- Some parameters like the upramp length and the length of the hydrogen density profile can be set manually
-
+- Nitrogen, Argon and Krypton are choosable
 
 ### HOW TO USE:
 
 1. Make sure the requirements are fulfilled.
-2. Open the python file in a text editor and set the initial values of the FWHM, final electron density and nitrogen amount in a way you want them to be. 
-3. Start the script in a terminal by typing 'python pda_main.py'.
+2. Open the python file in a text editor and set the initial values in the header of the script. The corresponding
+   parameters depend on the script you want to start.
+3. Start the script in a terminal by typing 'python script_name.py' (replace script_name.py by the actual name of the
+   script you want to start).
 4. That's it.
       
 ### OUTPUTS:
 
-There are some output files that will be saved in the 'output' folder:
+Depends on the script:
 
-1. The plot of the gas density profiles
-2. The arrays of the gas densities (nitrogen density, hydrogen density and the total density)
+- 'energy_prob_2D.py': 2D plot that gives the tunnel ionization probability in dependence of the initial energy of the ionized electrons after ionization. epsilon = 0 f.e. means that the electron will be born at rest.
+- 'laser_prob_2D.py': 2D plot that gives the tunnel ionization probability in dependence of the laser amplitude.
+- 'energy_laser_prob_3D': Combines both of the scripts above -> 3D plot that gives the ionization probability in dependence of the initial electron energy AND the laser amplitude. 
 
 ### KNOWN BUGS/ISSUES:
 
 (There are no known issues at the moment. Feel free to contact me (sebastian.mahncke@desy.de) if you found some bugs)
 
-### EXAMPLE
+### EXAMPLES
 
 ![alt Example](https://github.com/smahncke/pdp/blob/master/example_plot.png?raw=true)
 
 ### OTHER TOOLS:
 
-1. Analyzer: Plots the actual gas densities of hydrogen, nitrogen and the total gas density. 
-2. Simulations: Standard [FBPIC](https://github.com/fbpic/fbpic) simulation that uses ionization-induced trapping
+1. Automated: An automated version of the 3D plot. Creates .png-files for ALL possible ionization levels automatically.
 
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
