@@ -1,11 +1,10 @@
 # Laser-plasma-acceleration tools (LPA-TOOLS)
 
-## Tunnel ionization probability (TIP)
+## Tunnel ionization degree (TID)
 
 ### DESCRIPTION:
 
-TIP is a python script that plots the tunnel ionization probability due to laser ionization for different gases in 
-dependence of typical parameters used for laser plasma acceleration, i.e. laser amplitude.
+TID is a python script that plots the degree of ionization of a gas assuming tunnel ionization probability in dependence of typical parameters used for laser plasma acceleration, i.e. laser amplitude, laser profile etc.
 
 ### REQUIREMENTS:
 
@@ -26,27 +25,23 @@ dependence of typical parameters used for laser plasma acceleration, i.e. laser 
       
 ### OUTPUTS:
 
-Depends on the script:
-
-- 'energy_prob_2D.py': 2D plot that gives the tunnel ionization probability in dependence of the initial energy of the ionized electrons after ionization. epsilon = 0 f.e. means that the electron will be born at rest.
-- 'laser_prob_2D.py': 2D plot that gives the tunnel ionization probability in dependence of the laser amplitude.
-- 'energy_laser_prob_3D': Combines both of the scripts above -> 3D plot that gives the ionization probability in dependence of the initial electron energy AND the laser amplitude. 
+A plot that shows the electric field of the gaussian laser pulse (dotted blue line), the laser envelope (orange line), the tunnel ionization probability (red line) which depends on the laser pulse and the potential of the ionization level, and the degree of ionization (green line). The laser propagates from right (positive z values) to the left. 
 
 ### KNOWN BUGS/ISSUES:
 
 (There are no known issues at the moment. Feel free to contact me (sebastian.mahncke@desy.de) if you found some bugs)
 
 ### EXAMPLES:
-(Click on the image)
-1. Example of 'laser_prob_2D':
-![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/examples/example_2D_Argon.png?raw=true)
+(Click on the image for a bigger view or browse into the examples folder)
+1. Example of nitrogen (level N4+ -> N5+):
+![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/ion_degree/examples/Nitrogen/N_5.png?raw=true)
 
-2. Example of 'energy_laser_prob_3D':
-![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/examples/example_3D_Argon.png?raw=true)
+2. Example of argon (level Ar9+ -> Ar10+):
+![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/ion_degree/examples/Argon/Ar_10.png?raw=true)
 
 ### OTHER TOOLS:
 
-1. Automated: An automated version of the 3D plot. Creates .png-files for ALL possible ionization levels automatically.
+1. Automated: An automated version that creates .png-files for ALL possible ionization levels automatically.
 
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
