@@ -25,7 +25,11 @@ TID is a python script that plots the degree of ionization of a gas assuming tun
       
 ### OUTPUTS:
 
-A plot that shows the electric field of the gaussian laser pulse (dotted blue line), the laser envelope (orange line), the tunnel ionization probability (red line) which depends on the laser pulse and the potential of the ionization level, and the degree of ionization (green line). The laser propagates from right (positive z values) to the left. 
+- A plot that shows the electric field of the gaussian laser pulse (dotted blue line), the laser envelope (orange line), the tunnel ionization probability (red line) which depends on the laser pulse and the potential of the ionization level, and the degree of ionization (green line). The laser propagates from right (positive z values) to the left. 
+
+- The max ionization degree in percent
+- The max ionization probability in percent
+- Laser amplitude threshold a(z) at which the ionization starts (ionization probability >= 1%)
 
 ### KNOWN BUGS/ISSUES:
 
