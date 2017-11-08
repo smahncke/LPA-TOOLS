@@ -1,10 +1,7 @@
-
-# coding: utf-8
-
-# In[1]:
-
-
+#-------
 #IMPORTS
+#-------
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as integrate
@@ -13,11 +10,9 @@ from pylab import title, show
 from scipy.constants import e, c, m_e, h, alpha, hbar
 from scipy.signal import hilbert
 
-
-# ##### Initial Parameters
-
-# In[226]:
-
+#----------
+#PARAMETERS
+#----------
 
 #LASER
 lambda_0 = 800e-9 #laser wavelength in m
@@ -33,12 +28,7 @@ n0 = 1.e24
 initial_energy = 0e3 #initial energy of the ionized electrons (in eV)
 element = 'Ar' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
 
-
-# ##### Ionization energies
-
-# In[227]:
-
-
+#IONIZATION ENERGIES
 if element == 'N':
 	U_G = [14.534,29.600,47.449,77.473,97.890,552.070,667.045]
 elif element == 'Ar':
@@ -48,15 +38,13 @@ elif element == 'Kr':
 else:
 	print("Choose an available element for ionization injection")
 
-ion_niveau = 12	
-
-U_i = U_G[ion_niveau-1]
-max_a = a0
+#PLOT SETTINGS
+ion_niveau = 12 #The niveau that should get ionized 	
 
 
-# ##### Constants and Parameters
-
-# In[228]:
+#------------------------------
+#CONSTANTS AND OTHER PARAMETERS
+#------------------------------
 
 
 #Physical constants
@@ -69,13 +57,14 @@ k_0 = 1/lambda_0 #wave number of the laser
 E_k = (1/e)*k_0*(c**2)*m_e #laser energy
 omega_0 = c*k_0 #laser frequency
 energy = initial_energy*e 
+U_i = U_G[ion_niveau-1]
+max_a = a0
 
+#--------------
+#LASER PROFILES
+#--------------
 
-# ##### Laser
-
-# In[229]:
-
-
+#OSCILLATING PULSE
 def gaussian_profile(max_a, z, r, t, w0, ctau, z0, zf, k_0):
 
     # Calculate the Rayleigh length
@@ -95,11 +84,17 @@ def gaussian_profile(max_a, z, r, t, w0, ctau, z0, zf, k_0):
     
     return(max_a*profile_Eperp.real )
 
+#ENVELOPE
 def gauss_laser(max_a,FWHM,z):
     sigma = FWHM/(np.sqrt(2*np.log(2)))
     laser_a = max_a*np.exp(-(z)**2/(2*sigma**2))
     return(laser_a)
 
+#------------------
+#IONIZATION PROCESS
+#------------------
+
+#PROBABILITY
 def ion_prob(z):
     
     E_gauss = gaussian_profile(a0, z,0,0,w0,ctau,z0,zf,k_0) 
@@ -121,6 +116,7 @@ def ion_prob(z):
     
     return(prob)
 
+#IONIZATION DEGREE
 def degree(z):
     n = np.zeros_like(z+1)
     for i,val in enumerate(z):
@@ -129,13 +125,25 @@ def degree(z):
             n[i+1]=  n[i]+prob*(n0-n[i])
     return n/n0
 
+def get_min_a(z):
+    prob = np.zeros_like(z)
+    for ii,z in enumerate(z):
+        prob[ii] = ion_prob(z)
+        min_a = gauss_laser(a0,FWHM,z)
+        if prob[ii] >= 0.01:
+            break
+    return min_a
 
-# ##### Plots
 
-# In[234]:
+
+
+#-----
+#PLOTS
+#-----
 
 z = np.linspace(-100.e-6,100.e-6,1000)
 
+a_ion_min = get_min_a(z)
 
 ### Plot the functions
 
@@ -149,20 +157,26 @@ plt.ylabel(r"a.u")
 ax.grid(which='major', alpha=0.8, color='grey', linestyle='--', linewidth=0.6, animated='True')
 ax.grid(which='minor', alpha=0.6, color='grey', linestyle='--', linewidth=0.5, animated='True')
 
+
+
 ax.plot(z*1e3, gaussian_profile(a0, z, 0, 0, w0, ctau, z0, zf, k_0),linestyle='--', label="Laser")
 ax.plot(z*1e3, gauss_laser(a0, FWHM, z), label="Envelope")
 ax.plot(z*1e3, degree(z), label="Inoization degree")
 ax.plot(z*1e3, ion_prob(z), label="Ionization probability")
 
+ax.text(0.074, -0.5, 'Measurements:\n\n- max. ionization deegre: '+str("%.2f" % max(degree(z)*100))+'% \n- max. ionization prob.:    ' +str("%.2f" % max(ion_prob(z)*100))+'% \n\n- $a_{thres}\, =$ '+str("%.2f" % a_ion_min)+'', bbox={'facecolor': '0.85', 'pad': 10})
+
 # Make the legend 
 legend = ax.legend(loc='upper right', shadow=True)
+
+
 for label in legend.get_texts():
     label.set_fontsize('medium')
 
 for label in legend.get_lines():
     label.set_linewidth(1.5)  # the legend line width
-title("Ionization degree [ $\lambda_0 =$ "+str(lambda_0*1.e9)+" nm, $a_0 =$"+str(a0)+", level "+str(element)+"$^{"+str(ion_niveau-1)+"+}\mapsto$ "+str(element)+"$^{"+str(ion_niveau)+"+}$]", bbox={'facecolor': '0.85', 'pad': 10})
+title("Ionization degree [ $a_0 =$"+str(a0)+", level "+str(element)+"$^{"+str(ion_niveau-1)+"+}\mapsto$ "+str(element)+"$^{"+str(ion_niveau)+"+}$]", bbox={'facecolor': '0.85', 'pad': 10})
 
-#plt.show()
+show()
 
-fig.savefig(""+str(element)+"_"+str(ion_niveau)+".png")
+#fig.savefig(""+str(element)+"_"+str(ion_niveau)+".png")
