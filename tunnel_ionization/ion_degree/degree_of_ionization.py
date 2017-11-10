@@ -1,14 +1,14 @@
+
 #-------
 #IMPORTS
 #-------
 
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.integrate as integrate
-import scipy.special as special
+import datetime
 from pylab import title, show
 from scipy.constants import e, c, m_e, h, alpha, hbar
-from scipy.signal import hilbert
+import sys
 
 #----------
 #PARAMETERS
@@ -16,36 +16,34 @@ from scipy.signal import hilbert
 
 #LASER
 lambda_0 = 800e-9 #laser wavelength in m
-FWHM = 1.19e-5 #Full width at  half max of the gaussian laser
-w0 = 60.e-5 
-ctau = 14.e-6
-z0 = 0.e-6
-zf = 500.e-6
+FWHM = 1.19e-5 #Full width at  half max of the gaussian laser (in pi)
+w0 = 35.e-6 #Laser waist
+ctau = 14.e-6 #Duration
+z0 = 0.e-6 
+zf = 500.e-6 #Focus
 a0 = 1.2 #The peak amplitude of the laser
-n0 = 1.e24
+n0 = 0.5e24 #Gas density
 
 #GAS
-initial_energy = 0e3 #initial energy of the ionized electrons (in eV)
-element = 'Ar' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
+energy = 0e3 #initial energy of the ionized electrons (in eV)
+element = 'N' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
 
 #IONIZATION ENERGIES
 if element == 'N':
 	U_G = [14.534,29.600,47.449,77.473,97.890,552.070,667.045]
 elif element == 'Ar':
-	U_G = [15.760,27.629,40.742,59.812,75.017,91.009,124.319,143.462,422.448,478.684,			538.963,618.260,686.104,755.742,854.772,918.026,4120.887,4426.228]
+	U_G = [15.760,27.629,40.742,59.812,75.017,91.009,124.319,143.462,422.448,478.684,	538.963,618.260,686.104,755.742,854.772,918.026,4120.887,4426.228]
 elif element == 'Kr':
-	U_G = [14.000,24.360,26.949,52.547,64.673,78.458,111.001,125.802,230.854,			268.227,307.819,350.312,390.733,446.700,492.303,541.015,591.800,640.512,785.612,833.287,			884.072,936.930,998.079,1050.937,1151.471,1205.261,2927,907,3069.897,3227.434,3380.826]
+	U_G = [14.000,24.360,26.949,52.547,64.673,78.458,111.001,125.802,230.854,268.227,307.819,350.312,390.733,446.700,492.303,541.015,591.800,640.512,785.612,833.287,884.072,936.930,998.079,1050.937,1151.471,1205.261,2927,907,3069.897,3227.434,3380.826]
 else:
 	print("Choose an available element for ionization injection")
 
 #PLOT SETTINGS
-ion_niveau = 12 #The niveau that should get ionized 	
-
+ion_niveau = 0 #The niveau that should get ionized 	
 
 #------------------------------
 #CONSTANTS AND OTHER PARAMETERS
 #------------------------------
-
 
 #Physical constants
 lambda_c = h/(m_e * c) #compton wavelength
@@ -53,12 +51,11 @@ U_H = 13.6 #ionization potential of hydrogen in eV
 epsilon_0 = 8.854e-12 #Vacuum permittivity
 
 #Other parameters
-k_0 = 1/lambda_0 #wave number of the laser
+k_0 = 2*np.pi/lambda_0 #wave number of the laser
 E_k = (1/e)*k_0*(c**2)*m_e #laser energy
 omega_0 = c*k_0 #laser frequency
-energy = initial_energy*e 
-U_i = U_G[ion_niveau-1]
-max_a = a0
+U_i = U_G[ion_niveau] #Get the ionization energies out of the arrays
+max_a = a0 #Set the max laser amplitude
 
 #--------------
 #LASER PROFILES
@@ -94,18 +91,20 @@ def gauss_laser(max_a,FWHM,z):
 #IONIZATION PROCESS
 #------------------
 
-#PROBABILITY
-def ion_prob(z):
+#IONIZATION ROBABILITY
+def ion_prob(psi,U_i):
     
-    E_gauss = gaussian_profile(a0, z,0,0,w0,ctau,z0,zf,k_0) 
+    #Get the curve of the laser field
+    E_gauss = gaussian_profile(a0, psi,0,0,w0,ctau,z0,zf,k_0) 
     
-    amplitude = gauss_laser(a0, FWHM, z)
+    #Get the envelope of the laser
+    amplitude = gauss_laser(a0, FWHM, psi)
 
 	#Keldysh parameter
     gamma_k = (alpha/amplitude)*np.sqrt(U_i/U_H) 
     
 	#Calculate the electrical field of the laser (in V/m)
-    E_L = 1e2*np.sqrt(2.8e18/(lambda_0*1e6*c*epsilon_0))*E_gauss #Electrical field of the laser in V/m
+    E_L = 1e2*np.sqrt(2.8e18/(lambda_0*1e6*c*epsilon_0))*E_gauss 
 	
     #Argument of the exponential function
     laser_ion = lambda_0/lambda_c * amplitude**3 *gamma_k**3 * (E_k/(np.sqrt(E_L**2)))
@@ -117,66 +116,73 @@ def ion_prob(z):
     return(prob)
 
 #IONIZATION DEGREE
-def degree(z):
-    n = np.zeros_like(z+1)
-    for i,val in enumerate(z):
-        prob = ion_prob(val)
-        if i+1 < len(z):
+def degree(psi,U_i):
+    n = np.zeros_like(psi+1)
+    print('\n------------------------------\nCALCULATIONS STARTED\n')
+    print('- a0:'+ str(a0))
+    print('- ion level: ' + str(element)+str(ion_niveau)+"+ -> "+str(element)+str(ion_niveau+1)+("+\n"))
+    for i,val in enumerate(psi):
+        #sys.stdout.write("\r" + ( str(int(i/len(psi)*100)) +"%"))
+        sys.stdout.write("\r" + "> Current status:" + str("% .1f" % (i/len(psi)*100)) +"%")
+        prob = ion_prob(val,U_i)
+        if i+1 < len(psi):
             n[i+1]=  n[i]+prob*(n0-n[i])
+        sys.stdout.flush()
+    print()
+    print('Max. ionization degree: '+ str(n[len(psi)-1]/n0 *100) +'%')
+    print('Max. ionization probability: '+ str(ion_prob(psi[int(len(psi)/2)],U_i)*100)+'%')
     return n/n0
 
-def get_min_a(z):
-    prob = np.zeros_like(z)
-    for ii,z in enumerate(z):
-        prob[ii] = ion_prob(z)
-        min_a = gauss_laser(a0,FWHM,z)
+#Get the min laser amplitude at which ionization begins
+def get_min_a(psi):
+    prob = np.zeros_like(psi)
+    for ii,psi in enumerate(psi):
+        prob[ii] = ion_prob(psi)
+        min_a = gauss_laser(a0,FWHM,psi)
         if prob[ii] >= 0.01:
             break
     return min_a
-
-
-
 
 #-----
 #PLOTS
 #-----
 
-z = np.linspace(-100.e-6,100.e-6,1000)
+#Initialize the psi array (the number of entries should be in the range of 1e7 for correct results)
+psi = np.linspace(-32e-6,32e-6,1.2e7)
 
-a_ion_min = get_min_a(z)
-
-### Plot the functions
+#a_ion_min = get_min_a(psi)
 
 # Set the size of the plot
 fig, ax = plt.subplots(figsize=(20,10))
 
 # Set the labels of the axis
-plt.xlabel("z [mm]")
+plt.xlabel("$\psi$ [$\pi$]")
 plt.ylabel(r"a.u")
 
+# Make the grid
 ax.grid(which='major', alpha=0.8, color='grey', linestyle='--', linewidth=0.6, animated='True')
 ax.grid(which='minor', alpha=0.6, color='grey', linestyle='--', linewidth=0.5, animated='True')
 
-
-
-ax.plot(z*1e3, gaussian_profile(a0, z, 0, 0, w0, ctau, z0, zf, k_0),linestyle='--', label="Laser")
-ax.plot(z*1e3, gauss_laser(a0, FWHM, z), label="Envelope")
-ax.plot(z*1e3, degree(z), label="Inoization degree")
-ax.plot(z*1e3, ion_prob(z), label="Ionization probability")
-
-ax.text(0.074, -0.5, 'Measurements:\n\n- max. ionization deegre: '+str("%.2f" % max(degree(z)*100))+'% \n- max. ionization prob.:    ' +str("%.2f" % max(ion_prob(z)*100))+'% \n\n- $a_{thres}\, =$ '+str("%.2f" % a_ion_min)+'', bbox={'facecolor': '0.85', 'pad': 10})
+ax.plot(1e5*psi/(np.pi), gaussian_profile(a0, psi, 0, 0, w0, ctau, z0, zf, k_0),linestyle='--', label="Laser")
+ax.plot(1e5*psi/np.pi, gauss_laser(a0, FWHM, psi), label="Envelope")
+ax.plot(1e5*psi/np.pi, degree(psi,U_G[ion_niveau]), label="Inoization degree")
+ax.plot(1e5*psi/np.pi, ion_prob(psi,U_G[ion_niveau]), label="Ionization probability")
 
 # Make the legend 
 legend = ax.legend(loc='upper right', shadow=True)
-
 
 for label in legend.get_texts():
     label.set_fontsize('medium')
 
 for label in legend.get_lines():
     label.set_linewidth(1.5)  # the legend line width
-title("Ionization degree [ $a_0 =$"+str(a0)+", level "+str(element)+"$^{"+str(ion_niveau-1)+"+}\mapsto$ "+str(element)+"$^{"+str(ion_niveau)+"+}$]", bbox={'facecolor': '0.85', 'pad': 10})
+title("Ionization degree [ $a_0 =$"+str(a0)+", level "+str(element)+"$^{"+str(ion_niveau)+"+}\mapsto$ "+str(element)+"$^{"+str(ion_niveau+1)+"+}$]", bbox={'facecolor': '0.85', 'pad': 10})
 
-show()
+fig.savefig("plt_"+str(element)+str(ion_niveau)+".png")
 
-#fig.savefig(""+str(element)+"_"+str(ion_niveau)+".png")
+print("Saved plot as 'plt_"+str(element)+str(ion_niveau)+".png'!")
+print("\nFINISHED!")
+# Open the plot
+plt.show()
+
+
