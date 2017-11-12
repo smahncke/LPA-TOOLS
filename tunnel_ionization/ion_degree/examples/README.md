@@ -6,11 +6,11 @@ The following images show examples of the tunnel ionization degree script. Click
 
 ### Nitrogen:
 
-![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/ion_degree/examples/Nitrogen/N_6.png?raw=true)
+![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/ion_degree/examples/Nitrogen/plt_N4.png?raw=true)
 
 ### Argon:
 
-![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/ion_degree/examples/Argon/Ar_10.png?raw=true)
+![alt Example](https://github.com/smahncke/LPA-TOOLS/blob/master/tunnel_ionization/ion_degree/examples/Argon/plt_Ar8.png?raw=true)
 
 
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
