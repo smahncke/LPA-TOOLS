@@ -4,6 +4,7 @@
 
 import numpy as np
 import time
+import datetime
 from scipy.integrate import odeint
 from pylab import *
 import scipy.constants as const
@@ -22,25 +23,24 @@ start_timer = time.time()
 #------------------
 #INITIAL PARAMETERS
 #------------------
-
-n0 = 1.e24 #Plasma density
-lambda_0 = 800.e-9 #laser wavelength
-RMS = 1 #RMS of the gaussian laser profile
 E_max = 2 
 
+#LASER
 a0 = 1.2 #Max laser amplitude
+lambda_0 = 800.e-9 #laser wavelength
 
 w0 = 35.e-6 #Laser waist
-ctau = 14.e-6 #Laser duration
+t_pulse = 40.e-15 #Length of one laser pulse in s)
 z0 = 0.e-6 #Focus position
 zf = 500.e-6 #Laser focus
 
 #GAS
+n0 = 1.e24 #Plasma density
 energy = 0e3 #initial energy of the ionized electrons (in eV)
 element = 'Ar' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
 
 #PLOT SETTINGS
-ion_niveau = 8 #The niveau that should get ionized 	
+ion_niveau = 9 #The niveau that should get ionized 	
 iterations = 1.2e7 #Resolution of the plots (the higher the better)
 
 #------------------------------
@@ -53,6 +53,8 @@ U_H = 13.6 #ionization potential of hydrogen in eV
 epsilon_0 = 8.854e-12 #Vacuum permittivity
 
 #Other parameters
+ctau = t_pulse*c #Laser duration in m
+RMS = (1/(46.7e-15))*t_pulse #RMS of the gaussian laser profile
 omega_0 = 2*np.pi*c/lambda_0 # Omega of the laser
 k_0 = 2*np.pi/lambda_0 #wave number of the laser
 E_k = (1/e)*k_0*(c**2)*m_e #laser energy
@@ -94,7 +96,7 @@ output_list.append('Max laser amplitude a0: '+str(a0)+'\n')
 #INFO TEXTS
 #----------
 
-print('\n------------------------------\nCALCULATIONS STARTED\n')
+print('\n------------------------------\nCALCULATIONS STARTED AT '+ str(datetime.datetime.now().time())+'\n')
 
 #--------------
 #LASER PROFILES
@@ -154,7 +156,7 @@ def ion_prob(psi):
 #IONIZATION DEGREE
 def degree(psi,info):
 	n = np.zeros_like(psi+1)
-	print(info)
+	print("Calculating ionization degree...")
 	#start_timer_2 = time.time()
 	for i,val in enumerate(psi):
 		sys.stdout.write("\r" + " > Current status:" + str("% .1f" % (i/len(psi)*100)) +"%")
@@ -165,11 +167,13 @@ def degree(psi,info):
 	print()
 	#end_timer_2 = time.time()
 	#print("This process took "+str(int((end_timer_2-start_timer_2)/60))+" min, "+str(int(((end_timer_2-start_timer_2)/60)-int((end_timer_2-start_timer_2)/60))*60)+" sec!\n")
-	if info == "Calculating ionization degree...":
-		output_list.append('- Max. ionization degree: '+ str(n[len(psi)-1]/n0 *100) +'%')
-		output_list.append('- Max. ionization probability: '+ str(ion_prob(psi[int(len(psi)/2)])*100)+'%')
-		print('- Max. ionization degree: '+ str(n[len(psi)-1]/n0 *100) +'%')
-		print('- Max. ionization probability: '+ str(ion_prob(psi[int(len(psi)/2)])*100)+'%\n')
+	print("Export the data...")
+	np.savetxt('degree.dat', n/n0, delimiter=',')
+	print("Done!\n")
+	output_list.append('- Max. ionization degree: '+ str(n[len(psi)-1]/n0 *100) +'%')
+	output_list.append('- Max. ionization probability: '+ str(ion_prob(psi[int(len(psi)/2)])*100)+'%')
+	print('- Max. ionization degree: '+ str(n[len(psi)-1]/n0 *100) +'%')
+	print('- Max. ionization probability: '+ str(ion_prob(psi[int(len(psi)/2)])*100)+'%\n')
 	return n/n0
 
 
@@ -215,7 +219,7 @@ start_timer_1 = time.time()
 
 print("Calculating the wakefield potential, this may take a moment...")    
 # Solve the quasi static plasma wave equation
-phi = list(map(lambda x: odeint(potentialeq, phiinit, psi, args = (z,x,)),range(10)))
+phi = list(map(lambda x: odeint(potentialeq, phiinit, psi, args = (z,x,)),range(4)))
 end_timer_1 = time.time()
 print("Finished - This process took "+str(int((end_timer_1-start_timer_1)/60))+" min, "+str(int((((end_timer_1-start_timer_1)/60)-int((end_timer_1-start_timer_1)/60))*60))+" sec!\n")
 
@@ -236,8 +240,12 @@ def condition_fullfilled(zz): # Checks if the trapping condition is fullfilled (
     return diff # Just =/= 0 if condition is fullfilled
 
 def trapping(zz,info):
+	print("Calculating trapping condition...")
 	condition = condition_fullfilled(zz)
-	grad_deg = np.gradient(degree(zz/1.4e5,info))
+	print("> Import the ionization degree data...")
+	degree_list = loadtxt("degree.dat", delimiter=',')
+	print("> Data successfully imported!")
+	grad_deg = np.gradient(degree_list)	
 	trap = np.zeros_like(psi+1)
 	for ii,val in enumerate(psi):
 		if ii+1 < len(psi):
@@ -246,8 +254,9 @@ def trapping(zz,info):
 			else:
 				trap[ii+1] = trap[ii]
 	output_list.append('- Max. trapping: '+ str(trap[len(psi)-1] *100) +'%')
+	print("Calculations are done!\n")
 	return trap
-        
+	
     
 # Plot the condition 
 ax.plot(psi/np.pi,condition_fullfilled(z),label="Trapping condition")
@@ -290,6 +299,6 @@ with open('output.dat', 'w') as output_dat:
 
 end_timer = time.time()
 
-print("Finished - The calculations took "+str(int((end_timer-start_timer)/60))+" min, "+str(int((((end_timer-start_timer)/60)-int((end_timer-start_timer)/60))*60))+" sec!")
+print("Done - The calculations took "+str(int((end_timer-start_timer)/60))+" min, "+str(int((((end_timer-start_timer)/60)-int((end_timer-start_timer)/60))*60))+" sec overall!")
 
 plt.show()
