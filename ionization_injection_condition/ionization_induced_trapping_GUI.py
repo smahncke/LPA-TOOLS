@@ -364,6 +364,7 @@ end_timer = time.time()
 
 print("Done - The calculations took "+str(int((end_timer-start_timer)/60))+" min, "+str(int((((end_timer-start_timer)/60)-int((end_timer-start_timer)/60))*60))+" sec overall!")
 
-shutil.rmtree("temp/")
+os.remove("temp/degree.dat")
+os.rmdir("temp/")
 
 plt.show()
