@@ -14,6 +14,7 @@ from scipy.constants import m_e,c,e, epsilon_0, h, alpha, hbar
 import matplotlib.pyplot as plt
 from pylab import title, show
 from pathlib import Path
+import os
 
 #-----
 #TIMER
@@ -21,6 +22,15 @@ from pathlib import Path
 
 start_timer = time.time()
 
+#--
+#OS
+#--
+
+#Creates the given directory if it doesn't already exist
+def create_dir(dir_name):
+	if not os.path.exists(os.path.dirname(dir_name)):
+		os.makedirs(os.path.dirname(dir_name))
+		
 #------------------
 #INITIAL PARAMETERS
 #------------------
@@ -236,6 +246,7 @@ if wakefield.exists():
 			print("The wakefield hasn't been exported")
 	#		break
 		else:
+			create_dir("wakefields/")
 			print("Exporting the wakefield, this take a moment...")
 			np.savetxt("wakefields/wakefield_a0_"+str(a0)+".dat", phi[3][:,0], delimiter=',')
 			print("Done!")
@@ -262,6 +273,7 @@ else:
 		print("The wakefield hasn't been exported")
 	#	break
 	else:
+		create_dir("wakefields/")
 		print("Exporting the wakefield, this take a moment...")
 		np.savetxt("wakefields/wakefield_a0_"+str(a0)+".dat",  phi[3][:,0], delimiter=',')
 		print("Done!")
