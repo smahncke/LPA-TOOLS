@@ -179,7 +179,8 @@ def degree(psi,info):
 	#end_timer_2 = time.time()
 	#print("This process took "+str(int((end_timer_2-start_timer_2)/60))+" min, "+str(int(((end_timer_2-start_timer_2)/60)-int((end_timer_2-start_timer_2)/60))*60)+" sec!\n")
 	print("Export the data...")
-	np.savetxt('degree.dat', n/n0, delimiter=',')
+	create_dir("temp/")
+	np.savetxt('temp/degree.dat', n/n0, delimiter=',')
 	print("Done!\n")
 	output_list.append('- Max. ionization degree: '+ str(n[len(psi)-1]/n0 *100) +'%')
 	output_list.append('- Max. ionization probability: '+ str(ion_prob(psi[int(len(psi)/2)])*100)+'%')
@@ -304,7 +305,7 @@ def trapping(zz,info):
 	print("Calculating trapping condition...")
 	condition = condition_fullfilled(zz)
 	print("> Import the ionization degree data...")
-	degree_list = loadtxt("degree.dat", delimiter=',')
+	degree_list = loadtxt("temp/degree.dat", delimiter=',')
 	print("> Data successfully imported!")
 	grad_deg = np.gradient(degree_list)	
 	trap = np.zeros_like(psi+1)
@@ -346,20 +347,23 @@ for label in legend.get_lines():
     label.set_linewidth(1.5)  # the legend line width
 title("Trapping degree [ $a_0 =$"+str(a0)+", level "+str(element)+"$^{"+str(ion_niveau)+"+}\mapsto$ "+str(element)+"$^{"+str(ion_niveau+1)+"+}$]", bbox={'facecolor': '0.85', 'pad': 10})
 
-          
-fig.savefig("plt_"+str(element)+str(ion_niveau)+".png")
+create_dir("output/")
+
+fig.savefig("output/plt_"+str(element)+str(ion_niveau)+".png")
 
 print("> Saved plot as 'plt_"+str(element)+str(ion_niveau)+".png'!")
 
 print("\n> Exports results as .dat file\n")
 
 
-with open('output.dat', 'w') as output_dat:
+with open('output/output.dat', 'w') as output_dat:
 	for output_list_entries in output_list:
 		output_dat.write(str(output_list_entries)+ "\n")
 
 end_timer = time.time()
 
 print("Done - The calculations took "+str(int((end_timer-start_timer)/60))+" min, "+str(int((((end_timer-start_timer)/60)-int((end_timer-start_timer)/60))*60))+" sec overall!")
+
+shutil.rmtree("temp/")
 
 plt.show()
