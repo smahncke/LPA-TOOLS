@@ -37,7 +37,7 @@ def create_dir(dir_name):
 E_max = 2 
 
 #LASER
-a0 = 1.4 #Max laser amplitude
+a0 = 1.2 #Max laser amplitude
 lambda_0 = 800.e-9 #laser wavelength
 
 w0 = 35.e-6 #Laser waist
@@ -51,8 +51,8 @@ energy = 0e3 #initial energy of the ionized electrons (in eV)
 element = 'Ar' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
 
 #PLOT SETTINGS
-ion_niveau = 9 #The niveau that should get ionized 	
-iterations = 1.2e4 #Resolution of the plots (the higher the better)
+ion_niveau = 7 #The niveau that should get ionized 	
+iterations = 1.2e7 #Resolution of the plots (the higher the better)
 
 #------------------------------
 #OTHER PARAMETERS AND CONSTANTS
@@ -356,7 +356,7 @@ print("> Saved plot as 'plt_"+str(element)+str(ion_niveau)+".png'!")
 print("\n> Exports results as .dat file\n")
 
 
-with open('output/output.dat', 'w') as output_dat:
+with open('output/output_'+str(element)+str(ion_niveau)+'.dat', 'w') as output_dat:
 	for output_list_entries in output_list:
 		output_dat.write(str(output_list_entries)+ "\n")
 
