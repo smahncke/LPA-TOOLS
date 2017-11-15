@@ -51,7 +51,7 @@ energy = 0e3 #initial energy of the ionized electrons (in eV)
 element = 'Ar' # Element that is used fo ionization injection (string, use the shortcut, f.e. 'N' for nitrogen)
 
 #PLOT SETTINGS
-ion_niveau = 7 #The niveau that should get ionized 	
+ion_niveau = 10 #The niveau that should get ionized 	
 iterations = 1.2e7 #Resolution of the plots (the higher the better)
 
 #------------------------------
