@@ -1,0 +1,36 @@
+Ionization induced trapping - outputs
+-----------------------------
+40 fs:
+
+Element: Ar
+Ionization level: Ar8+ -> Ar9+
+Max laser amplitude a0: 1.2
+
+- Max. ionization degree: 15.8264455832%
+- Max. ionization probability: 0.000104959951601%
+- Max. trapping: 13.9593823094%
+
+------------------------------------------
+
+46 fs:
+
+Element: Ar
+Ionization level: Ar8+ -> Ar9+
+Max laser amplitude a0: 1.2
+
+- Max. ionization degree: 18.2204810924%
+- Max. ionization probability: 0.000104959951601%
+- Max. trapping: 17.5100066801%
+
+
+------------------------------------------
+
+60 fs:
+
+Element: Ar
+Ionization level: Ar8+ -> Ar9+
+Max laser amplitude a0: 1.2
+
+- Max. ionization degree: 22.7739757169%
+- Max. ionization probability: 0.000104959951601%
+- Max. trapping: 22.6032907775%
