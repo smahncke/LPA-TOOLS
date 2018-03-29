@@ -80,7 +80,7 @@ laser_envelope = las.gaussian_envelope(a0,zz,ctau)
 
 print("Results of the LPA-Tools ionization calculation script:")
 print("")
-print("The "+str(ion_level)+". niveau of the element '"+str(element)+"' has an ionization energy of "+str(U_i)+" MeV."
+print("The "+str(ion_level)+". niveau of the element '"+str(element)+"' has an ionization energy of "+str(U_i)+" MeV.")
 print("")
 print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(prob.max())+" %.")
 print("")
