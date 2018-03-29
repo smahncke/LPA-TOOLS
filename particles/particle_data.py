@@ -7,9 +7,22 @@ from numba.decorators import jit, autojit
 import scipy.constants as const
 import scipy.integrate as integrate
 
+#-------------------------------
+# Ionization energy of the atoms
+#-------------------------------
 
 def get_ion_energy(element,niveau):
 
+	"""
+	Returns the ionization of the energy of the given element and niveau
+	
+	-INPUT:	- element [string]:	Name of the element (shortcut, i.e. 'N' for nitrogen)
+		- niveau [integer]:	Ionization niveau/level
+		
+	-RETURN: - U_i [float]:		Ionization energy of the element and level (in MeV)
+	"""
+	
+	#Get the energy and return an error if the element doesn't exist
 	if element == 'N':
 		U_G = [14.53,29.60,47.44,77.47,97.89,552.07,667.05]
 	elif element == 'Ar':
@@ -23,7 +36,8 @@ def get_ion_energy(element,niveau):
 				1205.3,2928.,3070.,3227.,3381.]
 	else:
 		print("Error: Unknown element given!")
-
+	
+	#Returns the energy for total ionization if niveau > number of electrons of the atom
 	if niveau >= len(U_G):
 		U_i = U_G[len(U_G)-1]
 	else:
