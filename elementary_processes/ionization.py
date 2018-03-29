@@ -41,7 +41,7 @@ def ionization_probability(U_i,energy,max_a,z,w0,ctau,zf,lambda_0, plot=False, r
 	E_k = (1/const.e)*(2*np.pi/lambda_0)*(const.c**2)*const.m_e
     
 	#Electrical field of the laser
-	E_gauss = las.gaussian_field(max_a, z,r,t,w0,ctau,zf,lambda_0) 
+	E_gauss = las.gaussian_field(max_a, z,w0,ctau,zf,lambda_0) 
     
 	#Envelope of the laser
 	amplitude = las.gaussian_envelope(max_a,z,ctau)
