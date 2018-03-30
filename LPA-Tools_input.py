@@ -8,6 +8,7 @@ from pylab import title, show
 from scipy.constants import c
 from laser import laser_profiles as las
 from elementary_processes import ionization as ion
+from elementary_processes import potential as pot
 from particles import particle_data as ptcl
 
 
@@ -34,6 +35,9 @@ zf = 50
 # PARTICLE PARAMETER
 #-------------------
 
+#Max gas density (in 1/cm^3)
+ne = 1e24
+
 #The used element (use the shortcut)
 element = 'N'
 
@@ -50,6 +54,7 @@ energy = 0
 
 #Array over the laser pulse
 zz = np.linspace(3*ctau,-3*ctau,1e6)
+
 
 ###################################################
 
@@ -73,6 +78,8 @@ laser_field = las.gaussian_field(a0,zz,w0,ctau,zf,lambda_0)
 #Laser envelope
 laser_envelope = las.gaussian_envelope(a0,zz,ctau)
 
+#Wakefield
+wake = pot.wakefield(zz,a0,ctau,ne)
 
 #-------------------
 # Prints the results
@@ -87,7 +94,6 @@ print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(1
 print("")
 print("The final degree of ionization behind the laser pulse is "+str(100*degree[len(degree)-1])+" %.")
 print("----------------------------------------------------------")
-
 
 
 
