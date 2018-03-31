@@ -70,7 +70,7 @@ U_i = ptcl.get_ion_energy(element,ion_level)
 prob = ion.ionization_probability(U_i,energy,a0,zz,w0,ctau,zf,lambda_0)
 
 #Ionization degree
-degree = ion.ionization_degree(prob,zz)
+degree = ion.ionization_degree(zz,prob)
 
 #Laser field
 laser_field = las.gaussian_field(a0,zz,w0,ctau,zf,lambda_0)
