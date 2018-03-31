@@ -72,7 +72,7 @@ def ionization_probability(U_i,energy,max_a,z,w0,ctau,zf,lambda_0, plot=False, r
 # Degree of ionization
 #---------------------
 
-def ionization_degree(probability,z,plot = False):
+def ionization_degree(z,probability,plot = False):
 	
 	"""
 	Calculates the degree of ionization behind the laser pulse
