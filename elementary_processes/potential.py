@@ -114,7 +114,7 @@ def wakefield(zz,max_a,ctau,n_e):
 # TRAPPING CONDITION
 #-------------------
 	
-def gammap(z,max_a,lambda_0): 
+def gammap(z,max_a,lambda_0,n_e): 
 	"""
 	Calculates gamma of the plasma
 	
@@ -127,9 +127,9 @@ def gammap(z,max_a,lambda_0):
 	#Frequency of the laser
 	w_L = 2 * const.pi * const.c / (lambda_0*1e-6) 
 	
-	return w_L / wp(z) * sqrt((sqrt(1+max_a**2)+1)/2)
+	return w_L / wp(z,n_e) * sqrt((sqrt(1+max_a**2)+1)/2)
 	
-def get_phi_min(z,max_a,lambda_0):
+def get_phi_min(z,max_a,lambda_0,n_e):
 	"""
 	Calculates the minimum of the potential
 	
@@ -140,9 +140,9 @@ def get_phi_min(z,max_a,lambda_0):
 	-RETURN:	-phi_min [array]:	The minimum of the potential
 	"""
 	#The max of the potential 
-	E_max = 2	
+	E_max = 50	
 	
-	return (-1+1/(2*gammap(z,max_a,lambda_0)**2))*(1-1/E_max**2) + E_max**2/(4*gammap(z,max_a,lambda_0)**2)
+	return (-1+1/(2*gammap(z,max_a,lambda_0,n_e)**2))*(1-1/E_max**2) + E_max**2/(4*gammap(z,max_a,lambda_0,n_e)**2)
 
 
 def condition(z,max_a,ctau,lambda_0,n_e):
@@ -162,14 +162,14 @@ def condition(z,max_a,ctau,lambda_0,n_e):
 	phi = potential(z,max_a,ctau,n_e)
 	
 	#Calculate the hamiltonian of the separatrix
-	right_side = np.sqrt(1+las.gaussian_envelope(max_a,z,ctau)**2)/gammap(z,max_a,lambda_0)
+	right_side = np.sqrt(1+las.gaussian_envelope(max_a,z,ctau)**2)/gammap(z,max_a,lambda_0,n_e)
 	
 	#Calculate the hamiltonian of the separatrix
-	left_side =  1 + get_phi_min(z,max_a,lambda_0) - phi[3][:,0]
+	left_side =  1 + get_phi_min(z,max_a,lambda_0,n_e) - phi[3][:,0]
 	
 	return(right_side-left_side)
 	
-def condition_fullfilled(z,max_a,ctau,lambda_0,n_e):
+def condition_fullfilled(z,max_a,ctau,lambda_0,n_e,return_condition = False):
 	"""
 	Gives the z positions of the target where trapping can happen
 	
@@ -190,7 +190,27 @@ def condition_fullfilled(z,max_a,ctau,lambda_0,n_e):
 	#If H_s > H_e the ionized electrons get trapped, otherwise they don't
 	for i in range(0,len(z)):
 		if cond[i] > 0:
-			fullfilled[i] = cond[i]
+			if return_condition == True:
+				fullfilled[i] = cond[i]
+			else:
+				fullfilled[i] = 1
 		else:
 			fullfilled[i] = 0
 	return(fullfilled)
+
+
+def trapped_particles(z,max_a,ctau,lambda_0,n_e,ionization_degree):
+	
+	trapping_condition_fullfilled = condition_fullfilled(z,max_a,ctau,lambda_0,n_e)
+
+	ionization_rate = np.gradient(ionization_degree)
+
+	trapped_particles = np.zeros_like(z)
+
+	for i in range(0,len(z)):
+		trapped_particles[i] = n_e*ionization_rate[i]*trapping_condition_fullfilled[i]
+
+	return(trapped_particles)
+
+	
+

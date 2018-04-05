@@ -5,7 +5,7 @@ import math
 import os
 import matplotlib.pyplot as plt
 from pylab import title, show
-from scipy.constants import c
+from scipy.constants import c,e
 from laser import laser_profiles as las
 from elementary_processes import ionization as ion
 from elementary_processes import potential as pot
@@ -17,7 +17,7 @@ from particles import particle_data as ptcl
 #----------------
 
 #Peak a0 of  the laser pulse
-a0 = 1.5
+a0 = 2.
 
 #Wavelength of the laser (in microns)
 lambda_0 = 800e-3
@@ -42,10 +42,10 @@ ne = 1e24
 element = 'N'
 
 #The energy level that should get ionized
-ion_level = 7
+ion_level = 6
 
-#Energy of the ionized electrons after ionization (in MeV)
-energy = 0
+#Energy of the ionized electrons after ionization (in Joule)
+energy = 1*e
 
 
 #---------------------
@@ -94,8 +94,6 @@ print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(1
 print("")
 print("The final degree of ionization behind the laser pulse is "+str(100*degree[len(degree)-1])+" %.")
 print("----------------------------------------------------------")
-
-
 
 
 
