@@ -14,7 +14,7 @@ from laser import laser_profiles as las
 # Ionization probability
 #-----------------------
 
-def ionization_probability(U_i,energy,max_a,z,w0,ctau,zf,lambda_0, plot=False, r = 0, t = 0):
+def ionization_probability(z,max_a,w0,ctau,zf,lambda_0,U_i,energy, plot=False, r = 0, t = 0):
 
 	"""
 	Calculates the ionization probability in dependence of laser parameters
@@ -41,10 +41,10 @@ def ionization_probability(U_i,energy,max_a,z,w0,ctau,zf,lambda_0, plot=False, r
 	E_k = (1/const.e)*(2*np.pi/lambda_0)*(const.c**2)*const.m_e
     
 	#Electrical field of the laser
-	E_gauss = las.gaussian_field(max_a, z,w0,ctau,zf,lambda_0) 
+	E_gauss = las.gaussian_field(z, max_a,w0,ctau,zf,lambda_0) 
     
 	#Envelope of the laser
-	amplitude = las.gaussian_envelope(max_a,z,ctau)
+	amplitude = las.gaussian_envelope(z, max_a,ctau)
 
 	#Keldysh parameter
 	gamma_k = (const.alpha/amplitude)*np.sqrt(U_i/U_H) 

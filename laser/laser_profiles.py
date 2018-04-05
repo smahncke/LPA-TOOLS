@@ -11,7 +11,7 @@ import scipy.integrate as integrate
 # Electrical field of the laser
 #------------------------------
 
-def gaussian_field(max_a, z, w0, ctau, zf, lambda_0, r = 0, t = 0):
+def gaussian_field(z, max_a, w0, ctau, zf, lambda_0, r = 0, t = 0):
 
 	"""
 	Calculates the electrical field of the gaussian laser pulse
@@ -53,7 +53,7 @@ def gaussian_field(max_a, z, w0, ctau, zf, lambda_0, r = 0, t = 0):
 # Envelope of the gaussian laser pulse
 #-------------------------------------
 
-def gaussian_envelope(max_a,z,ctau):
+def gaussian_envelope(z, max_a, ctau):
 	
 	"""
 	Calculates the envelope of the gaussian laser pulse

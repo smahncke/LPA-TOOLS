@@ -67,16 +67,16 @@ zz = np.linspace(3*ctau,-3*ctau,1e6)
 U_i = ptcl.get_ion_energy(element,ion_level)
 
 #Ionization probability
-prob = ion.ionization_probability(U_i,energy,a0,zz,w0,ctau,zf,lambda_0)
+prob = ion.ionization_probability(zz,a0,w0,ctau,zf,lambda_0,U_i,energy,)
 
 #Ionization degree
 degree = ion.ionization_degree(zz,prob)
 
 #Laser field
-laser_field = las.gaussian_field(a0,zz,w0,ctau,zf,lambda_0)
+laser_field = las.gaussian_field(zz, a0,w0,ctau,zf,lambda_0)
 
 #Laser envelope
-laser_envelope = las.gaussian_envelope(a0,zz,ctau)
+laser_envelope = las.gaussian_envelope(zz, a0,ctau)
 
 #Wakefield
 wake = pot.wakefield(zz,a0,ctau,ne)
