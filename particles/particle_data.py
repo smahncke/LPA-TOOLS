@@ -19,7 +19,7 @@ def get_ion_energy(element,niveau):
 	-INPUT:	- element [string]:	Name of the element (shortcut, i.e. 'N' for nitrogen)
 		- niveau [integer]:	Ionization niveau/level
 		
-	-RETURN: - U_i [float]:		Ionization energy of the element and level (in MeV)
+	-RETURN: - U_i [float]:		Ionization energy of the element and level (in eV)
 	"""
 	
 	#Get the energy and return an error if the element doesn't exist
