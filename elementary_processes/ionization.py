@@ -9,6 +9,7 @@ import scipy.integrate as integrate
 import sys
 sys.path.append('../')
 from laser import laser_profiles as las
+from sklearn.preprocessing import normalize
 
 #-----------------------
 # Ionization probability
@@ -103,3 +104,42 @@ def ionization_degree(z,probability,plot = False):
 		plt.show()
 		
 	return(degree/ne)
+
+#------------------------
+# Ionization-energy distribution
+#------------------------
+
+def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range = [0,50,1], normed = True, plot_result = True):
+
+    energy_space = np.linspace(energy_range[0],energy_range[1],int(energy_range[1]/energy_range[2]))
+    
+    ion_prob = []
+    ion_degree = []
+    
+    for ii in range(energy_range[0],int(energy_range[1]/energy_range[2])):
+        sys.stdout.write("\r"+"Calculating the ionization energy distribution: "+str(100*(ii+1)/len(energy_space))+"%")
+        ion_prob.append(ionization_probability(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range[2]*ii*const.e))
+        ion_degree.append(ionization_degree(z,ion_prob[ii]))
+        sys.stdout.flush()
+    print()
+    
+    final_degree = []
+
+    for i in range(energy_range[0],int(energy_range[1]/energy_range[2])):
+        final_degree.append(ion_degree[i][len(ion_degree[i])-1])
+
+    final_degree_normed = normalize(final_degree)
+
+    if plot_result == True:
+        plt.figure()
+        if normed == False:
+            plt.plot(energy_space,final_degree)
+        else:
+            plt.plot(energy_space,final_degree_normed[0])
+        plt.show()
+
+    if normed == True:
+        return(final_degree_normed) 
+    else:
+        return(final_degree)
+

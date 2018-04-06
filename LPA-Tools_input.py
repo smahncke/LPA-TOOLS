@@ -17,7 +17,7 @@ from particles import particle_data as ptcl
 #----------------
 
 #Peak a0 of  the laser pulse
-a0 = 2.
+a0 = 2.1
 
 #Wavelength of the laser (in microns)
 lambda_0 = 800e-3
@@ -81,12 +81,15 @@ laser_envelope = las.gaussian_envelope(zz, a0,ctau)
 #Wakefield
 wake = pot.wakefield(zz,a0,ctau,ne)
 
+#Ionization energy distribution
+distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
+
 #-------------------
 # Prints the results
 #-------------------
 
 print("----------------------------------------------------------")
-print("Results of the LPA-Tools ionization calculation script:")
+print("Results of the LPA-Tools example script:")
 print("")
 print("The "+str(ion_level)+". niveau of the element '"+str(element)+"' has an ionization energy of "+str(U_i)+" eV.")
 print("")
@@ -94,6 +97,4 @@ print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(1
 print("")
 print("The final degree of ionization behind the laser pulse is "+str(100*degree[len(degree)-1])+" %.")
 print("----------------------------------------------------------")
-
-
-
+print("* Visit https://github.com/smahncke/LPA-TOOLS for documentation *")
