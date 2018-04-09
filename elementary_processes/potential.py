@@ -199,24 +199,40 @@ def condition_fullfilled(z,max_a,ctau,lambda_0,n_e,return_condition = False):
 	return(fullfilled)
 
 
-def trapped_particles(z,n_e,ionization_degree,trapping_condition,ion_energy_distribution):
+def trapping_rate(z,n_e,ionization_degree,trapping_condition,ion_energy_distribution):
+	"""
+	Calculates the rate particles that get trapped
+	
+	-INPUT:	-z [array]:			Array over the laser pulse
+		-n_e [float]:			Peak density (in 1/cm^3)
+		-ionization_degree [array]:	Degree of ionization of the gas 
+		-trapping_condition [array]:	Calculated trapping condition (must be a step function)
+		-ion_energy_distribution [array]: Distribution of the ionization energies 
+		
+	-RETURN: -trapping_rate [array]:	Rate of trapping
+	"""
+	
+	#Initialize the array
+	trapping_rate = np.zeros_like(trapping_condition)
 
-	trapped_particles = np.zeros_like(trapping_condition)
-
+	#Calculate the gradient of the degree of ionization
 	grad_degree = np.gradient(ionization_degree)
 
 	if max(trapping_condition) != 1:
+		#Check if the given trapping condition is a step function
 		print("ERROR: The trapping condition must be a step function!")
 	elif ion_energy_distribution[0][0] != 0:
+		#Check if the ionization degree for E=0 exists
 		print("ERROR: The first value of the energy distribution function must be zero!")
 	else:
+		#Calculates the rate of trapping
 		for i in range(0,len(trapping_condition)):
-			sys.stdout.write("\r"+"Calculating the amount of trapped particles: "+str(100*(i+1)/len(trapped_particles))+"%")
-			trapped_particles[i] = trapping_condition[i]*n_e*grad_degree[i]*ion_energy_distribution[1][0][0]
+			sys.stdout.write("\r"+"Calculating the amount of trapped particles: "+str(100*(i+1)/len(trapping_rate))+"%")
+			trapping_rate[i] = trapping_condition[i]*n_e*grad_degree[i]*ion_energy_distribution[1][0][0]
 			sys.stdout.flush()
 		print()
 
-	return(trapped_particles)
+	return(trapping_rate)
 
 	
 
