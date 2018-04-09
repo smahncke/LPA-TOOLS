@@ -4,6 +4,7 @@ from pylab import *
 import scipy.constants as const
 from numba import double
 from numba.decorators import jit, autojit
+import warnings
 import scipy.constants as const
 import scipy.integrate as integrate
 import sys
@@ -109,7 +110,7 @@ def ionization_degree(z,probability,plot = False):
 # Ionization-energy distribution
 #-------------------------------
 
-def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range = [0,50,1], normed = True, plot_result = False):
+def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range = [0,50,1], normed = True, plot_result = False, ignore_warnings = True):
 
 	"""
 	Calculates the distribution of the final electron energies after ionization
@@ -133,7 +134,10 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 		  final_degree_normed:	Array of the degree of ionization of the specific energy / y axis of the 
 		  			distribution
 	"""
-	
+	#Wether to ignore warnings
+	if ignore_warnings == True:
+		warnings.filterwarnings("ignore")	
+
 	#Create the energy axis
 	energy_space = np.linspace(energy_range[0],energy_range[1],int(energy_range[1]/energy_range[2]))
     
