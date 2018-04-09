@@ -59,6 +59,9 @@ zz = np.linspace(3*ctau,-3*ctau,1e6)
 
 ###################################################
 
+
+print("")
+print('{:*^75}'.format(' Laser plasma accelerator tools '))
 print("")
 
 #------------------------------------
@@ -87,11 +90,11 @@ wake = pot.wakefield(zz,a0,ctau,ne)
 distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
 
 #-------------------
-# Prints the results
+# Print the results
 #-------------------
 
-print("----------------------------------------------------------")
-print("Results of the LPA-Tools example script:")
+print("")
+print('{:-^75}'.format(' Results '))
 print("")
 print("The "+str(ion_level)+". niveau of the element '"+str(element)+"' has an ionization energy of "+str(U_i)+" eV.")
 print("")
@@ -99,11 +102,19 @@ print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(1
 print("")
 print("The final degree of ionization behind the laser pulse is "+str(100*degree[len(degree)-1])+" %")
 print("if the electrons should have a final kinetic energy of "+str(energy/e)+" eV")
-print("----------------------------------------------------------")
+print("")
+print('{:-^75}'.format(' Website '))
 print("* Visit https://github.com/smahncke/LPA-TOOLS for documentation *")
+print("")
 
-tool.plotter(zz,[degree,laser_field,wake],x_label="z",y_label="[a.u.]")
-tool.plotter(distribution[0],distribution[1])
+#-----------------
+# Plot the results
+#-----------------
+
+tool.plotter(zz,[degree,laser_field,wake],x_label="z",y_label="[a.u.]",\
+				plot_title = r"LPA-Tools example: $a_0 = $"+str(a0)+", "+str(element)+str(ion_level)+r"+ $\rightarrow$ "+str(element)+str(ion_level+1)+"+")
+
+tool.plotter(distribution[0],distribution[1], x_label="Energy [eV]", y_label="Degree [%]", plot_title="Ionization energy distribution")
 
 
 
