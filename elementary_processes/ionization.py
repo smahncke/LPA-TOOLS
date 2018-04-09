@@ -105,18 +105,39 @@ def ionization_degree(z,probability,plot = False):
 		
 	return(degree/ne)
 
-#------------------------
+#-------------------------------
 # Ionization-energy distribution
-#------------------------
+#-------------------------------
 
 def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range = [0,50,1], normed = True, plot_result = True):
 
+	"""
+	Calculates the distribution of the final electron energies after ionization
+	
+	INPUT:	-z [array]:		Array over the laser pulse
+		-max_a [float]:		Peak a0 of the laser
+		-w0 [float]:		Waist of the laser in the focus (in microns)
+		-ctau [float]:		Laser duration (in femtoseconds)
+		-zf [float]:		Laser focus position (in microns)
+		-lambda_0 [float]:	Laser wavelength (in microns)
+		-U_i [float]:		Ionization energy of the electron
+		-energy_range [array,
+			optional]:	Range of the possible electron energies (in eV): [Min_energy,max_energy,stepwidth]
+		-normed [boolean,
+			optional]:	Wether to normalize the plot/distribution function
+		-plot_result [boolean,
+			optional]:	Wether to plot the result
+	"""
+	
+	#Create the energy axis
 	energy_space = np.linspace(energy_range[0],energy_range[1],int(energy_range[1]/energy_range[2]))
     
+	#Initialize the arrays
 	ion_prob = []
 	ion_degree = []
 	energies = []
     
+	#Step 1: Calculate the ionization degree
 	for ii in range(energy_range[0],int(energy_range[1]/energy_range[2])):
 		sys.stdout.write("\r"+"Calculating the ionization energy distribution: "+str(100*(ii+1)/len(energy_space))+"%")
 		ion_prob.append(ionization_probability(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range[2]*ii*const.e))
@@ -124,26 +145,33 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 		sys.stdout.flush()
 	print()
     
+	#Step 2: Get the final ionization degree behind the laser pulse
 	final_degree = []
 
 	for i in range(energy_range[0],int(energy_range[1]/energy_range[2])):
 		energies.append(i)
 		final_degree.append(ion_degree[i][len(ion_degree[i])-1])
 
+	#Normalize the distribution
 	final_degree_normed = normalize(final_degree)
 
+	#Plot the function if plot_result is true
 	if plot_result == True:
 		plt.figure()
 		if normed == False:
+			#Original function
 			plt.plot(energy_space,final_degree)
 		else:
+			#Normalized function
 			plt.plot(energy_space,final_degree_normed[0])
 		plt.xlabel("Final electron energy [eV]")
 		plt.ylabel("Degree")
 		plt.show()
 
 	if normed == True:
+		#Return the normalized function
 		return(energies,final_degree_normed) 
 	else:
+		#Return the original function
 		return(energies,final_degree)
 
