@@ -109,7 +109,7 @@ def ionization_degree(z,probability,plot = False):
 # Ionization-energy distribution
 #-------------------------------
 
-def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range = [0,50,1], normed = True, plot_result = True):
+def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range = [0,50,1], normed = True, plot_result = False):
 
 	"""
 	Calculates the distribution of the final electron energies after ionization
@@ -140,7 +140,6 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 	#Initialize the arrays
 	ion_prob = []
 	ion_degree = []
-	energies = []
     
 	#Step 1: Calculate the ionization degree
 	for ii in range(energy_range[0],int(energy_range[1]/energy_range[2])):
@@ -154,7 +153,6 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 	final_degree = []
 
 	for i in range(energy_range[0],int(energy_range[1]/energy_range[2])):
-		energies.append(i)
 		final_degree.append(ion_degree[i][len(ion_degree[i])-1])
 
 	#Normalize the distribution
@@ -175,8 +173,8 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 
 	if normed == True:
 		#Return the normalized function
-		return(energies,final_degree_normed) 
+		return(energy_space,final_degree_normed) 
 	else:
 		#Return the original function
-		return(energies,final_degree)
+		return(energy_space,final_degree)
 

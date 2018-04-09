@@ -9,6 +9,7 @@ from scipy.constants import c,e
 from laser import laser_profiles as las
 from elementary_processes import ionization as ion
 from elementary_processes import potential as pot
+from elementary_processes import program_tools as tool
 from particles import particle_data as ptcl
 
 
@@ -42,7 +43,7 @@ ne = 1e24
 element = 'N'
 
 #The energy level that should get ionized
-ion_level = 7
+ion_level = 6
 
 #Energy of the ionized electrons after ionization (in Joule)
 energy = 0*e
@@ -83,7 +84,7 @@ laser_envelope = las.gaussian_envelope(zz, a0,ctau)
 wake = pot.wakefield(zz,a0,ctau,ne)
 
 #Ionization energy distribution
-distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.01),normed=False)
+distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
 
 #-------------------
 # Prints the results
@@ -101,4 +102,8 @@ print("if the electrons should have a final kinetic energy of "+str(energy/e)+" 
 print("----------------------------------------------------------")
 print("* Visit https://github.com/smahncke/LPA-TOOLS for documentation *")
 
-np.savetxt("energy_distribution_"+str(ion_level)+".txt",list(distribution),delimiter=',')
+tool.plotter(zz,[degree,laser_field,wake],x_label="z",y_label="[a.u.]")
+tool.plotter(distribution[0],distribution[1])
+
+
+
