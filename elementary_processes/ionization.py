@@ -114,7 +114,7 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 	"""
 	Calculates the distribution of the final electron energies after ionization
 	
-	INPUT:	-z [array]:		Array over the laser pulse
+	-INPUT:	-z [array]:		Array over the laser pulse
 		-max_a [float]:		Peak a0 of the laser
 		-w0 [float]:		Waist of the laser in the focus (in microns)
 		-ctau [float]:		Laser duration (in femtoseconds)
@@ -127,6 +127,11 @@ def ionization_energy_distribution(z,max_a,w0,ctau,zf,lambda_0,U_i,energy_range 
 			optional]:	Wether to normalize the plot/distribution function
 		-plot_result [boolean,
 			optional]:	Wether to plot the result
+	
+	-RETURN: -energies [array]:	Energies of the electrons/ x axis of the distribution
+		 -final_degree/
+		  final_degree_normed:	Array of the degree of ionization of the specific energy / y axis of the 
+		  			distribution
 	"""
 	
 	#Create the energy axis
