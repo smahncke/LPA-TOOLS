@@ -42,10 +42,10 @@ ne = 1e24
 element = 'N'
 
 #The energy level that should get ionized
-ion_level = 6
+ion_level = 7
 
 #Energy of the ionized electrons after ionization (in Joule)
-energy = 1*e
+energy = 0*e
 
 
 #---------------------
@@ -58,6 +58,7 @@ zz = np.linspace(3*ctau,-3*ctau,1e6)
 
 ###################################################
 
+print("")
 
 #------------------------------------
 # Calculate the ionization parameters
@@ -82,7 +83,7 @@ laser_envelope = las.gaussian_envelope(zz, a0,ctau)
 wake = pot.wakefield(zz,a0,ctau,ne)
 
 #Ionization energy distribution
-distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
+distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.01),normed=False)
 
 #-------------------
 # Prints the results
@@ -95,6 +96,9 @@ print("The "+str(ion_level)+". niveau of the element '"+str(element)+"' has an i
 print("")
 print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(100*prob.max())+" %.")
 print("")
-print("The final degree of ionization behind the laser pulse is "+str(100*degree[len(degree)-1])+" %.")
+print("The final degree of ionization behind the laser pulse is "+str(100*degree[len(degree)-1])+" %")
+print("if the electrons should have a final kinetic energy of "+str(energy/e)+" eV")
 print("----------------------------------------------------------")
 print("* Visit https://github.com/smahncke/LPA-TOOLS for documentation *")
+
+np.savetxt("energy_distribution_"+str(ion_level)+".txt",list(distribution),delimiter=',')

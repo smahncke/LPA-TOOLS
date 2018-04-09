@@ -199,16 +199,22 @@ def condition_fullfilled(z,max_a,ctau,lambda_0,n_e,return_condition = False):
 	return(fullfilled)
 
 
-def trapped_particles(z,max_a,ctau,lambda_0,n_e,ionization_degree):
-	
-	trapping_condition_fullfilled = condition_fullfilled(z,max_a,ctau,lambda_0,n_e)
+def trapped_particles(z,n_e,ionization_degree,trapping_condition,ion_energy_distribution):
 
-	ionization_rate = np.gradient(ionization_degree)
+	trapped_particles = np.zeros_like(trapping_condition)
 
-	trapped_particles = np.zeros_like(z)
+	grad_degree = np.gradient(ionization_degree)
 
-	for i in range(0,len(z)):
-		trapped_particles[i] = n_e*ionization_rate[i]*trapping_condition_fullfilled[i]
+	if max(trapping_condition) != 1:
+		print("ERROR: The trapping condition must be a step function!")
+	elif ion_energy_distribution[0][0] != 0:
+		print("ERROR: The first value of the energy distribution function must be zero!")
+	else:
+		for i in range(0,len(trapping_condition)):
+			sys.stdout.write("\r"+"Calculating the amount of trapped particles: "+str(100*(i+1)/len(trapped_particles))+"%")
+			trapped_particles[i] = trapping_condition[i]*n_e*grad_degree[i]*ion_energy_distribution[1][0][0]
+			sys.stdout.flush()
+		print()
 
 	return(trapped_particles)
 
