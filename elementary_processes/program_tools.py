@@ -10,7 +10,7 @@ import sys
 sys.path.append('../')
 
 
-def plotter(z,input_data,size = (15,10),x_label = "", y_label = ""):
+def plotter(z,input_data,size = (15,10),x_label = "", y_label = "", plot_title = ""):
 	plt.figure(figsize=size)
 	for i in range(0,len(input_data)):
 		try:
@@ -20,6 +20,7 @@ def plotter(z,input_data,size = (15,10),x_label = "", y_label = ""):
 			print("**NOTE: The "+str(i+1)+". dataset has different x/y dimensions - Plotting impossible")
 	plt.xlabel(x_label)
 	plt.ylabel(y_label)
+	title(plot_title)
 
 	plt.show()
 
