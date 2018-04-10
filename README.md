@@ -20,6 +20,10 @@ The results can be used to estimate a minimal needed laser intensity/ a0 to run 
 - calculate and plot the wakefield 
 - calculate the so-called 'trapping condition', which is essential for ionization-induced trapping. It can be used to calculate analytically the trapped charge/bunch charge (this feature will be added soon, too).
 
+#### Example
+
+![alt example_plot](example_plot.png)
+
 ## Requirements:
 
 All tools are python scripts, so you should've installed a python distribution, for example Anaconda, see https://www.anaconda.com/download/
