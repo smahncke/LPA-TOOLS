@@ -22,7 +22,7 @@ The results can be used to estimate a minimal needed laser intensity/ a0 to run 
 
 #### Example
 
-![alt example_plot](example_plot.png =200x)
+![alt example_plot](example_plot.png)
 
 ## Requirements:
 
