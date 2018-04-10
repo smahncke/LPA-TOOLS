@@ -10,7 +10,7 @@ import sys
 sys.path.append('../')
 
 
-def plotter(z,input_data,size = (15,10),x_label = "", y_label = "", plot_title = ""):
+def plotter(z,input_data,size = (15,10),x_label = "", y_label = "", plot_title = "",legend = [],colors = []):
 	"""
 	Plots the given input data
 
@@ -35,11 +35,22 @@ def plotter(z,input_data,size = (15,10),x_label = "", y_label = "", plot_title =
 		
 		#Checks if the x and y dimensions match
 		try:
-			plt.plot(z,input_data[i])
+			if np.logical_and(len(legend) == len(input_data),len(colors) == len(input_data)):
+				plt.plot(z,input_data[i],label=legend[i],color=colors[i])
+			elif np.logical_and(len(legend) == len(input_data),len(colors) == 0):
+				plt.plot(z,input_data[i],label=legend[i])
+			elif np.logical_and(len(legend) == 0, len(colors) == len(input_data)):
+				plt.plot(z,input_data[i],color=colors[i])
+			else:
+				plt.plot(z,input_data[i])
 		except ValueError:
 			print("")
 			print("**NOTE: The "+str(i+1)+". dataset has different x/y dimensions - Plotting impossible")
 	
+	#Plot the legend
+	if len(legend) == len(input_data):
+		plt.legend()
+
 	#Labels	
 	plt.xlabel(x_label)
 	plt.ylabel(y_label)
