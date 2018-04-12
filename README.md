@@ -35,21 +35,20 @@ All tools are python scripts, so you should've installed a python distribution, 
 After installing Anaconda, you can install LPA-TOOLS by making the following steps:
 
 1. Open a terminal and browse to the directory you want to install this script.
-2. Clone this repository by typing
+2. Clone this repository by typing: 
 	```
 	git clone https://github.com/smahncke/LPA-TOOLS
 	```	
-into a terminal.
 
 #### How to use the code
 
 1. You can use the LPA-TOOLS_example.py script for example or modify it with a text editor. Take a look at the documentation for the syntax.
 2. Open a terminal and browse to the directory you installed LPA-TOOLS
-3. Run the script by typing
+3. Run the script by typing (replace 'script_name' by the actual name of the script):
 	```
 	python script_name.py
 	```
-into a terminal (replace 'script_name' by the actual name of the script).
+
 
 
 
