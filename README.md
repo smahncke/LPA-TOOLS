@@ -1,10 +1,10 @@
 # Laser-plasma-acceleration tools (LPA-TOOLS)
 
-## SHORT DESCRIPTION: 
+## Short description: 
 
 This repository includes a bunch of simple tools for simulations of laser-plasma-acceleration, especially ionization-induced trapping in laser-plasma-accelerators.
 
-## FEATURES:
+## Features:
 
 This is a short overview of the features that are included in this repository. More detailed README files of different features will be added in the correlating directory soon.
 
@@ -24,10 +24,38 @@ The results can be used to estimate a minimal needed laser intensity/ a0 to run 
 
 ![alt example_plot](example_plot.png)
 
-## Requirements:
+## How to install and use the script:
+
+#### Requirements
 
 All tools are python scripts, so you should've installed a python distribution, for example Anaconda, see https://www.anaconda.com/download/
 
+#### How to install the code 
+
+After installing Anaconda, you can install LPA-TOOLS by making the following steps:
+
+1. Open a terminal and browse to the directory you want to install this script.
+2. Clone this repository by typing
+	'''
+ 	git clone https://github.com/smahncke/LPA-TOOLS
+	'''
+into a terminal.
+
+#### How to use the code
+
+1. You can use the LPA-TOOLS_example.py script for example or modify it with a text editor. Take a look at the documentation for the syntax.
+2. Open a terminal and browse to the directory you installed LPA-TOOLS
+3. Run the script by typing
+	'''
+	python script_name.py
+	'''
+into a terminal (replace 'script_name' by the actual name of the script).
+
+
+
+## Contact:
+
 Feel free to contact me if you need further information or if you got some issues: sebastian.mahncke@desy.de
 
+Thank you for using LPA-TOOLS. 
 
