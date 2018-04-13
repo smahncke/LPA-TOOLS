@@ -26,7 +26,7 @@ lambda_0 = 800e-3
 #Waist of the laser in the focus (in microns)
 w0 = 22
 
-#Laser duration (in femtoseconds)
+#Laser duration (in microns)
 ctau = 10.1
 
 #Laser focus (in microns)
