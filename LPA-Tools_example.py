@@ -11,6 +11,7 @@ from elementary_processes import ionization as ion
 from elementary_processes import potential as pot
 from elementary_processes import program_tools as tool
 from particles import particle_data as ptcl
+from particles import plasma as plsm
 
 
 #----------------
@@ -89,6 +90,9 @@ wake = pot.wakefield(zz,a0,ctau,ne)
 #Ionization energy distribution
 distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
 
+#Critical plasma density
+n_c = plsm.get_critical_density(lambda_0*1e-6)
+
 #-------------------
 # Print the results
 #-------------------
@@ -97,6 +101,9 @@ print("")
 print('{:-^75}'.format(' Results '))
 print("")
 print("The "+str(ion_level)+". niveau of the element '"+str(element)+"' has an ionization energy of "+str(U_i)+" eV.")
+print("")
+print("The critical plasma density for a laser with a wavelength of "+str(lambda_0*1e-6)+" nm")
+print("is "+str(n_c)+" 1/m**3")
 print("")
 print("With a peak a0 of "+str(a0)+", the max. ionization probability is "+str(100*prob.max())+" %.")
 print("")
