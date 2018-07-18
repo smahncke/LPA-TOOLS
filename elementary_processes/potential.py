@@ -62,7 +62,7 @@ def potentialeq(phi,zz,z,zi,max_a,ctau,n_e):
 	-RETURN:	-potentialeq [array]:	Wave-equation of the non-linear, 1D plasma wave
 	"""
 	
-	return array([phi[1],((1+las.gaussian_envelope(zz,max_a,ctau)**2)/(2*(phi[0]+1))-0.5)*(kp(z,n_e)[zi]/1e6)**2])
+	return array([phi[1],((1+las.gaussian_a0(zz,max_a,ctau)**2)/(2*(phi[0]+1))-0.5)*(kp(z,n_e)[zi]/1e6)**2])
 
 #Potential/Solution of the wave-equation
 def potential(zz,max_a,ctau,n_e):
@@ -162,7 +162,7 @@ def condition(z,max_a,ctau,lambda_0,n_e):
 	phi = potential(z,max_a,ctau,n_e)
 	
 	#Calculate the hamiltonian of the separatrix
-	right_side = np.sqrt(1+las.gaussian_envelope(z, max_a,ctau)**2)/gammap(z,max_a,lambda_0,n_e)
+	right_side = np.sqrt(1+las.gaussian_a0(z, max_a,ctau)**2)/gammap(z,max_a,lambda_0,n_e)
 	
 	#Calculate the hamiltonian of the separatrix
 	left_side =  1 + get_phi_min(z,max_a,lambda_0,n_e) - phi[3][:,0]

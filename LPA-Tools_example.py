@@ -82,13 +82,13 @@ degree = ion.ionization_degree(zz,prob)
 laser_field = las.gaussian_field(zz, a0,w0,ctau,zf,lambda_0)
 
 #Laser envelope
-laser_envelope = las.gaussian_envelope(zz, a0,ctau)
+laser_envelope = las.gaussian_a0(zz, a0,ctau)
 
 #Wakefield
 wake = pot.wakefield(zz,a0,ctau,ne)
 
 #Ionization energy distribution
-distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
+#distribution = ion.ionization_energy_distribution(zz,a0,w0,ctau,zf,lambda_0,U_i,energy_range=(0,5,0.1))
 
 #Critical plasma density
 n_c = plsm.get_critical_density(lambda_0*1e-6)
@@ -121,7 +121,7 @@ print("")
 tool.plotter(zz,[degree,laser_field,wake],x_label="z",y_label="[a.u.]",\
 				plot_title = r"LPA-Tools example: $a_0 = $"+str(a0)+", "+str(element)+str(ion_level)+r"+ $\rightarrow$ "+str(element)+str(ion_level+1)+"+")
 
-tool.plotter(distribution[0],distribution[1], x_label="Energy [eV]", y_label="Degree [%]", plot_title="Ionization energy distribution")
+#tool.plotter(distribution[0],distribution[1], x_label="Energy [eV]", y_label="Degree [%]", plot_title="Ionization energy distribution")
 
 
 
